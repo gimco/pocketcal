@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from "react"; // Import useCallback
+import { useEffect } from "react";
 import "./App.css";
 import { useStore } from "./store";
 import Sidebar from "./components/Sidebar";
