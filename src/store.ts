@@ -91,11 +91,21 @@ export const useStore = create<AppState>((set, get) => ({
 			if (state.eventGroups.length >= MAX_GROUPS) {
 				return state; // Don't add if limit reached
 			}
-			const newGroupIndex = state.eventGroups.length;
+
+			// Find the first unused color
+			const usedColors = new Set(state.eventGroups.map((g) => g.color));
+			const availableColor = GROUP_COLORS.find(
+				(color) => !usedColors.has(color.hex)
+			);
+
+			if (!availableColor) {
+				return state; // Don't add if no colors available (shouldn't happen with MAX_GROUPS)
+			}
+
 			newGroup = {
 				id: nanoid(),
 				name,
-				color: GROUP_COLORS[newGroupIndex].hex,
+				color: availableColor.hex,
 				ranges: [],
 			};
 			return {
