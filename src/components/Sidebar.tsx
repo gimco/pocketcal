@@ -31,8 +31,9 @@ function Sidebar() {
 
 	const handleAddGroup = () => {
 		if (newEventName.trim()) {
-			addEventGroup(newEventName.trim());
+			const newGroup = addEventGroup(newEventName.trim());
 			setNewEventName("");
+			selectEventGroup(newGroup.id);
 		}
 	};
 

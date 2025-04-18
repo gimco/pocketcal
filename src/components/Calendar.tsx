@@ -18,6 +18,9 @@ import {
 	isBefore,
 	isAfter,
 	startOfDay,
+	parseISO,
+	subDays,
+	addDays,
 } from "date-fns";
 import "./Calendar.css";
 
@@ -52,8 +55,29 @@ const Calendar: React.FC = () => {
 		// Check if the date is already in a range for this group
 		const existingRange = findRangeForDate(date, selectedGroup);
 		if (existingRange) {
-			// If it is, delete that range and don't start dragging
+			// Delete the existing range
 			deleteDateRange(selectedGroupId, existingRange);
+
+			// Create two new ranges if needed - one before and one after the clicked date
+			const startDate = parseISO(existingRange.start);
+			const endDate = parseISO(existingRange.end);
+
+			// Only create new ranges if there are dates to include
+			if (isBefore(startDate, date)) {
+				const beforeRange: DateRange = {
+					start: formatISO(startDate, { representation: "date" }),
+					end: formatISO(subDays(date, 1), { representation: "date" }),
+				};
+				addDateRange(selectedGroupId, beforeRange);
+			}
+
+			if (isAfter(endDate, date)) {
+				const afterRange: DateRange = {
+					start: formatISO(addDays(date, 1), { representation: "date" }),
+					end: formatISO(endDate, { representation: "date" }),
+				};
+				addDateRange(selectedGroupId, afterRange);
+			}
 			return;
 		}
 
@@ -197,7 +221,9 @@ const Calendar: React.FC = () => {
 							}`}
 						>
 							{["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
-								.filter((_, index) => includeWeekends || (index > 0 && index < 6))
+								.filter(
+									(_, index) => includeWeekends || (index > 0 && index < 6)
+								)
 								.map((day) => (
 									<div key={day} className="weekday-header">
 										{day}

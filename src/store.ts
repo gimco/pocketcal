@@ -41,7 +41,7 @@ interface AppState {
 	setStartDate: (date: Date) => void;
 	setIncludeWeekends: (include: boolean) => void;
 	setShowToday: (show: boolean) => void;
-	addEventGroup: (name: string) => void;
+	addEventGroup: (name: string) => EventGroup;
 	updateEventGroup: (id: string, name: string) => void;
 	deleteEventGroup: (id: string) => void;
 	selectEventGroup: (id: string | null) => void;
@@ -85,24 +85,32 @@ export const useStore = create<AppState>((set, get) => ({
 	setIncludeWeekends: (include) => set({ includeWeekends: include }),
 	setShowToday: (show) => set({ showToday: show }),
 
-	addEventGroup: (name) =>
+	addEventGroup: (name) => {
+		let newGroup: EventGroup | null = null;
 		set((state) => {
 			if (state.eventGroups.length >= MAX_GROUPS) {
 				return state; // Don't add if limit reached
 			}
 			const newGroupIndex = state.eventGroups.length;
-			return {
-				eventGroups: [
-					...state.eventGroups,
-					{
-						id: nanoid(),
-						name,
-						color: GROUP_COLORS[newGroupIndex].hex,
-						ranges: [],
-					},
-				],
+			newGroup = {
+				id: nanoid(),
+				name,
+				color: GROUP_COLORS[newGroupIndex].hex,
+				ranges: [],
 			};
-		}),
+			return {
+				eventGroups: [...state.eventGroups, newGroup],
+			};
+		});
+		return (
+			newGroup || {
+				id: "", // Return empty group if we hit the limit
+				name: "",
+				color: "",
+				ranges: [],
+			}
+		);
+	},
 
 	updateEventGroup: (id, name) =>
 		set((state) => ({
