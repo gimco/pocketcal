@@ -2,10 +2,34 @@
 	flex-grow: 1;
 	padding: 20px;
 	display: grid;
-	grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+	grid-template-columns: repeat(
+		4,
+		1fr
+	); /* Default 4 columns for large screens */
 	gap: 16px;
 	align-content: start;
 	background-color: white;
+}
+
+@media (max-width: 1200px) {
+	.calendar-container {
+		grid-template-columns: repeat(
+			3,
+			1fr
+		); /* 3 columns for medium-large screens */
+	}
+}
+
+@media (max-width: 900px) {
+	.calendar-container {
+		grid-template-columns: repeat(2, 1fr); /* 2 columns for medium screens */
+	}
+}
+
+@media (max-width: 600px) {
+	.calendar-container {
+		grid-template-columns: 1fr; /* Single column for small screens */
+	}
 }
 
 .calendar-month {
@@ -74,20 +98,25 @@
 	display: none;
 }
 
-.calendar-day.today {
-	background-color: #fff8e6;
-}
-
 .calendar-day.today .day-number {
-	background-color: #ffd700;
 	color: #333;
 	font-weight: bold;
+	border: 2px solid #e4002b;
 	border-radius: 50%;
+	box-sizing: border-box;
 	width: 20px;
 	height: 20px;
+	padding: 11px;
 	display: flex;
 	align-items: center;
 	justify-content: center;
+}
+
+.calendar-day:has(.range-indicator).today .day-number {
+	color: #333;
+	background-color: #fff;
+	border-color: transparent;
+	text-shadow: none;
 }
 
 .calendar-day.dragging {
@@ -102,19 +131,30 @@
 	display: flex;
 	align-items: center;
 	justify-content: center;
+	position: relative;
+	z-index: 2;
+	transition: color 0.5s ease, font-weight 0.5s ease;
+}
+
+/* When the calendar day has range indicators, make the number white and bold */
+.calendar-day:has(.range-indicator) .day-number {
+	color: white;
+	font-weight: bold;
+	text-shadow: 0 1px 2px rgba(0, 0, 0, 0.7);
 }
 
 .range-indicators {
 	position: absolute;
 	inset: 0;
 	pointer-events: none;
+	z-index: 1;
 }
 
 .range-indicator {
 	position: absolute;
 	inset: 0;
 	border-radius: 2px;
-	transition: opacity 0.2s ease;
+	transition: opacity 0.5s ease;
 }
 
 .range-indicator:hover {

@@ -14,10 +14,10 @@ export const MAX_GROUPS = 5;
 
 export const GROUP_COLORS = [
 	{ hex: "#e4002b", rgb: "rgb(228, 0, 43)" }, // red
-	{ hex: "#24d05a", rgb: "rgb(36, 208, 90)" }, // green
-	{ hex: "#eb4888", rgb: "rgb(235, 72, 136)" }, // pink
 	{ hex: "#10a2f5", rgb: "rgb(16, 162, 245)" }, // blue
+	{ hex: "#24d05a", rgb: "rgb(36, 208, 90)" }, // green
 	{ hex: "#e9bc3f", rgb: "rgb(233, 188, 63)" }, // yellow
+	{ hex: "#eb4888", rgb: "rgb(235, 72, 136)" }, // pink
 ];
 
 export interface DateRange {
@@ -67,13 +67,16 @@ const createDefaultEventGroup = (index = 0): EventGroup => ({
 });
 
 // Create a function to get the default state
-const getDefaultState = () => ({
-	startDate: defaultStartDate,
-	includeWeekends: true,
-	showToday: true,
-	eventGroups: [createDefaultEventGroup()],
-	selectedGroupId: null,
-});
+const getDefaultState = () => {
+	const defaultGroup = createDefaultEventGroup();
+	return {
+		startDate: defaultStartDate,
+		includeWeekends: true,
+		showToday: true,
+		eventGroups: [defaultGroup],
+		selectedGroupId: defaultGroup.id, // Select the first group by default
+	};
+};
 
 export const useStore = create<AppState>((set, get) => ({
 	...getDefaultState(), // Use default state for initial values
@@ -168,14 +171,15 @@ export const useStore = create<AppState>((set, get) => ({
 				const decodedState = JSON.parse(atob(hash));
 				// Basic validation
 				if (decodedState.startDate && decodedState.eventGroups) {
+					const eventGroups = decodedState.eventGroups ?? [
+						createDefaultEventGroup(),
+					];
 					set({
 						startDate: startOfMonth(parseISO(decodedState.startDate)),
 						includeWeekends: decodedState.includeWeekends ?? true,
 						showToday: decodedState.showToday ?? true,
-						eventGroups: decodedState.eventGroups ?? [
-							createDefaultEventGroup(),
-						],
-						// Don't restore selectedGroupId from URL
+						eventGroups,
+						selectedGroupId: eventGroups[0]?.id ?? null, // Select first group if available
 					});
 				}
 			} else {
@@ -210,6 +214,21 @@ export const isDateInRange = (date: Date, group: EventGroup): boolean => {
 			start: parseISO(range.start),
 			end: parseISO(range.end),
 		})
+	);
+};
+
+// Helper function to find which range contains a specific date
+export const findRangeForDate = (
+	date: Date,
+	group: EventGroup
+): DateRange | null => {
+	return (
+		group.ranges.find((range) =>
+			isWithinInterval(date, {
+				start: parseISO(range.start),
+				end: parseISO(range.end),
+			})
+		) || null
 	);
 };
 

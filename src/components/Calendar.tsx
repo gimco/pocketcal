@@ -5,6 +5,7 @@ import {
 	isDateInRange,
 	checkSameDay,
 	DateRange,
+	findRangeForDate,
 } from "../store";
 import {
 	format,
@@ -28,6 +29,7 @@ const Calendar: React.FC = () => {
 		eventGroups,
 		selectedGroupId,
 		addDateRange,
+		deleteDateRange,
 	} = useStore();
 
 	const calendarDates = getCalendarDates(startDate);
@@ -40,6 +42,22 @@ const Calendar: React.FC = () => {
 
 	const handleMouseDown = (date: Date) => {
 		if (!selectedGroupId) return;
+
+		// Find the selected group
+		const selectedGroup = eventGroups.find(
+			(group) => group.id === selectedGroupId
+		);
+		if (!selectedGroup) return;
+
+		// Check if the date is already in a range for this group
+		const existingRange = findRangeForDate(date, selectedGroup);
+		if (existingRange) {
+			// If it is, delete that range and don't start dragging
+			deleteDateRange(selectedGroupId, existingRange);
+			return;
+		}
+
+		// If it's not already selected, start the normal drag operation
 		setIsDragging(true);
 		setDragStartDate(date);
 		setDragEndDate(date);
@@ -88,6 +106,16 @@ const Calendar: React.FC = () => {
 
 	const getMonthYearKey = (date: Date) => `${getYear(date)}-${getMonth(date)}`;
 
+	const adjustPaddingForWeekdays = (dayOfWeek: number): number => {
+		if (!includeWeekends) {
+			// Convert Sunday (0) to 5 padding days, as we start with Monday
+			if (dayOfWeek === 0) return 0;
+			// Subtract 1 from other days (Mon=1 -> 0 padding, Tue=2 -> 1 padding, etc)
+			return dayOfWeek - 1;
+		}
+		return dayOfWeek;
+	};
+
 	const groupedDates = calendarDates.reduce((acc, date) => {
 		if (!includeWeekends && isWeekend(date)) {
 			return acc;
@@ -130,16 +158,20 @@ const Calendar: React.FC = () => {
 	const getRangeStyles = (date: Date): React.CSSProperties[] => {
 		const styles: React.CSSProperties[] = [];
 
-		eventGroups.forEach((group) => {
-			if (isDateInRange(date, group)) {
-				styles.push({
-					backgroundColor: group.color + "80",
-					position: "absolute",
-					left: 0,
-					right: 0,
-					opacity: 0.7,
-				});
-			}
+		// Count how many groups have this date
+		const groupsWithDate = eventGroups.filter((group) =>
+			isDateInRange(date, group)
+		);
+		const hasMultipleGroups = groupsWithDate.length > 1;
+
+		groupsWithDate.forEach((group) => {
+			styles.push({
+				backgroundColor: group.color + (hasMultipleGroups ? "80" : ""),
+				position: "absolute",
+				left: 0,
+				right: 0,
+				opacity: hasMultipleGroups ? 0.7 : 1,
+			});
 		});
 
 		return styles;
@@ -151,8 +183,10 @@ const Calendar: React.FC = () => {
 				const [year, monthIndex] = monthYearKey.split("-").map(Number);
 				const monthDate = new Date(year, monthIndex);
 				const firstDayOfMonth = datesInMonth[0];
-				const dayOfWeek = (getDay(firstDayOfMonth) + 6) % 7;
-				const paddingDays = Array.from({ length: dayOfWeek });
+				const dayOfWeek = getDay(firstDayOfMonth);
+				const paddingDays = Array.from({
+					length: adjustPaddingForWeekdays(dayOfWeek),
+				});
 
 				return (
 					<div key={monthYearKey} className="calendar-month">
@@ -162,8 +196,8 @@ const Calendar: React.FC = () => {
 								!includeWeekends ? "weekends-hidden" : ""
 							}`}
 						>
-							{["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
-								.filter((_, index) => includeWeekends || index < 5)
+							{["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+								.filter((_, index) => includeWeekends || (index > 0 && index < 6))
 								.map((day) => (
 									<div key={day} className="weekday-header">
 										{day}
