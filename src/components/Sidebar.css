@@ -1,0 +1,87 @@
+.sidebar {
+	width: 300px;
+	padding: 20px;
+	border-right: 1px solid #ccc;
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+	background-color: #f9f9f9;
+	color: #333;
+	overflow-y: auto; /* Allow scrolling if content overflows */
+}
+
+.sidebar h2,
+.sidebar h3 {
+	margin-top: 0;
+	border-bottom: 1px solid #eee;
+	padding-bottom: 5px;
+}
+
+.setting-item {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.event-groups-list {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+
+.event-group-item {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 8px;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+	cursor: pointer;
+	background-color: #fff;
+}
+
+.event-group-item.selected {
+	border-color: #007bff;
+	box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+.event-group-item:hover {
+	background-color: #f0f0f0;
+}
+
+.color-indicator {
+	display: inline-block;
+	width: 15px;
+	height: 15px;
+	border-radius: 50%;
+	margin-right: 8px;
+	border: 1px solid #ccc;
+}
+
+.event-group-item button {
+	margin-left: 5px;
+	padding: 2px 5px;
+	font-size: 0.8em;
+}
+
+.add-event-group {
+	margin-top: auto; /* Push to the bottom */
+	padding-top: 20px;
+	border-top: 1px solid #eee;
+}
+
+.add-event-group input[type="text"] {
+	width: calc(100% - 12px); /* Account for padding */
+	padding: 5px;
+	margin-bottom: 10px;
+}
+
+.add-event-group .react-colorful {
+	width: 100%; /* Make color picker full width */
+	height: 150px;
+	margin-bottom: 10px;
+}
+
+.add-event-group button {
+	margin-right: 5px;
+}
