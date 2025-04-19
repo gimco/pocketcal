@@ -1,19 +1,50 @@
 #root {
-	max-width: none; /* Override default max-width */
+	max-width: none;
 	margin: 0;
 	padding: 0;
-	text-align: left; /* Override default text-align */
-	width: 100vw;
+	text-align: left;
+	width: 100%;
 	height: 100vh;
 	overflow: hidden;
 }
 
 .app-container {
 	display: flex;
-	flex-direction: row; /* Change to row for sidebar layout */
+	flex-direction: row;
 	height: 100vh;
-	width: 100vw;
-	overflow: hidden; /* Prevent body scroll */
+	width: 100%;
+	overflow: hidden;
+	position: relative;
+}
+
+/* Responsive layout */
+@media (max-width: 768px) {
+	.app-container {
+		flex-direction: column;
+	}
+
+	.app-container.sidebar-hidden .sidebar {
+		transform: translateX(-100%);
+	}
+}
+
+.sidebar-toggle {
+	position: fixed;
+	top: 10px;
+	right: 10px;
+	z-index: 100;
+	padding: 8px;
+	border-radius: 4px;
+	background: #f9f9f9;
+	border: 1px solid #ccc;
+	cursor: pointer;
+	display: none;
+}
+
+@media (max-width: 768px) {
+	.sidebar-toggle {
+		display: block;
+	}
 }
 
 /* Ensure the calendar area has a good max-width to fit multiple mini calendars */

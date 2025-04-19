@@ -1,13 +1,30 @@
 .sidebar {
-	width: 300px;
-	padding: 20px;
+	width: 280px;
+	min-width: 280px;
+	padding: 16px;
 	border-right: 1px solid #ccc;
 	display: flex;
 	flex-direction: column;
-	gap: 20px;
+	gap: 16px;
 	background-color: #f9f9f9;
 	color: #333;
-	overflow-y: auto; /* Allow scrolling if content overflows */
+	overflow-y: auto;
+	overflow-x: hidden;
+	transition: transform 0.3s ease;
+	box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+	.sidebar {
+		width: 100%;
+		min-width: 0;
+		height: auto;
+		max-height: 50vh;
+		border-right: none;
+		border-bottom: 1px solid #ccc;
+		position: relative;
+		z-index: 10;
+	}
 }
 
 .sidebar h2,
@@ -38,6 +55,14 @@
 	border-radius: 4px;
 	cursor: pointer;
 	background-color: #fff;
+	gap: 8px;
+	flex-wrap: wrap;
+}
+
+.event-group-item > div {
+	display: flex;
+	gap: 4px;
+	flex-wrap: wrap;
 }
 
 .event-group-item.selected {
@@ -68,6 +93,12 @@
 	margin-top: auto; /* Push to the bottom */
 	padding-top: 20px;
 	border-top: 1px solid #eee;
+}
+
+@media (max-width: 768px) {
+	.add-event-group {
+		margin-top: 20px; /* Remove auto margin on mobile */
+	}
 }
 
 .add-event-group input[type="text"] {

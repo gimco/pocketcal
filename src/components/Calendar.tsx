@@ -46,7 +46,6 @@ const Calendar: React.FC = () => {
 	const handleMouseDown = (date: Date) => {
 		if (!selectedGroupId) return;
 
-		// Find the selected group
 		const selectedGroup = eventGroups.find(
 			(group) => group.id === selectedGroupId
 		);
@@ -55,7 +54,6 @@ const Calendar: React.FC = () => {
 		// Check if the date is already in a range for this group
 		const existingRange = findRangeForDate(date, selectedGroup);
 		if (existingRange) {
-			// Delete the existing range
 			deleteDateRange(selectedGroupId, existingRange);
 
 			// Create two new ranges if needed - one before and one after the clicked date
@@ -81,7 +79,6 @@ const Calendar: React.FC = () => {
 			return;
 		}
 
-		// If it's not already selected, start the normal drag operation
 		setIsDragging(true);
 		setDragStartDate(date);
 		setDragEndDate(date);
@@ -132,9 +129,7 @@ const Calendar: React.FC = () => {
 
 	const adjustPaddingForWeekdays = (dayOfWeek: number): number => {
 		if (!includeWeekends) {
-			// Convert Sunday (0) to 5 padding days, as we start with Monday
 			if (dayOfWeek === 0) return 0;
-			// Subtract 1 from other days (Mon=1 -> 0 padding, Tue=2 -> 1 padding, etc)
 			return dayOfWeek - 1;
 		}
 		return dayOfWeek;
