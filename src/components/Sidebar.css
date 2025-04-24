@@ -1,6 +1,5 @@
 .sidebar {
-	width: 280px;
-	min-width: 280px;
+	min-width: 300px;
 	padding: 16px;
 	border-right: 1px solid #ccc;
 	display: flex;
@@ -29,7 +28,7 @@
 
 .sidebar h2,
 .sidebar h3 {
-	margin-top: 0;
+	margin: 10px 0 0 0;
 	border-bottom: 1px solid #eee;
 	padding-bottom: 5px;
 }
@@ -48,7 +47,6 @@
 
 .event-group-item {
 	display: flex;
-	justify-content: space-between;
 	align-items: center;
 	padding: 8px;
 	border: 1px solid #ddd;
@@ -56,13 +54,46 @@
 	cursor: pointer;
 	background-color: #fff;
 	gap: 8px;
-	flex-wrap: wrap;
+	min-height: 30px;
 }
 
-.event-group-item > div {
+.event-group-item .group-name {
+	flex-grow: 1;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	margin-right: 8px;
+}
+
+.event-group-item .group-actions {
 	display: flex;
 	gap: 4px;
-	flex-wrap: wrap;
+	flex-shrink: 0;
+}
+
+.event-group-item .inline-edit {
+	display: flex;
+	flex-grow: 1;
+	gap: 4px;
+	align-items: center;
+}
+
+.event-group-item .inline-edit input[type="text"] {
+	flex-grow: 1;
+	padding: 3px 5px;
+	border: 1px solid #ccc;
+	border-radius: 3px;
+	min-width: 50px;
+}
+
+.event-group-item .inline-edit button {
+	padding: 2px 5px;
+	font-size: 0.8em;
+	flex-shrink: 0;
+}
+
+.event-group-item.editing {
+	cursor: default;
 }
 
 .event-group-item.selected {
@@ -89,30 +120,46 @@
 	font-size: 0.8em;
 }
 
-.add-event-group {
-	margin-top: auto; /* Push to the bottom */
-	padding-top: 20px;
-	border-top: 1px solid #eee;
+.add-group-button {
+	margin-top: 10px;
+	padding: 8px 12px;
+	width: 100%;
+	box-sizing: border-box;
 }
 
 @media (max-width: 768px) {
-	.add-event-group {
-		margin-top: 20px; /* Remove auto margin on mobile */
+	.sidebar {
+		width: 100%;
+		min-width: 0;
+		height: auto;
+		max-height: 50vh;
+		border-right: none;
+		border-bottom: 1px solid #ccc;
+		position: relative;
+		z-index: 10;
 	}
-}
 
-.add-event-group input[type="text"] {
-	width: calc(100% - 12px); /* Account for padding */
-	padding: 5px;
-	margin-bottom: 10px;
-}
+	.add-group-button {
+		margin-top: 15px;
+	}
 
-.add-event-group .react-colorful {
-	width: 100%; /* Make color picker full width */
-	height: 150px;
-	margin-bottom: 10px;
-}
+	.event-group-item {
+		flex-wrap: wrap;
+	}
 
-.add-event-group button {
-	margin-right: 5px;
+	.event-group-item .group-name {
+		margin-right: 0;
+		margin-bottom: 5px;
+		flex-basis: 100%;
+	}
+
+	.event-group-item .inline-edit {
+		flex-wrap: wrap;
+		width: 100%;
+	}
+
+	.event-group-item .inline-edit input[type="text"] {
+		flex-basis: calc(100% - 110px);
+		margin-bottom: 5px;
+	}
 }

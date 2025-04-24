@@ -30,9 +30,8 @@ function Sidebar() {
 	}, [selectedGroupId, eventGroups, selectEventGroup]);
 
 	const handleAddGroup = () => {
-		if (newEventName.trim()) {
-			const newGroup = addEventGroup(newEventName.trim());
-			setNewEventName("");
+		if (eventGroups.length < MAX_GROUPS) {
+			const newGroup = addEventGroup("New Group");
 			selectEventGroup(newGroup.id);
 		}
 	};
@@ -48,7 +47,7 @@ function Sidebar() {
 	const handleEditClick = (group: EventGroup) => {
 		setEditingGroup(group);
 		setNewEventName(group.name);
-		selectEventGroup(group.id); // Also select it when editing
+		selectEventGroup(group.id);
 	};
 
 	const handleCancelEdit = () => {
@@ -71,33 +70,6 @@ function Sidebar() {
 	return (
 		<div className="sidebar">
 			<h2>PocketCal</h2>
-			<div className="setting-item">
-				<label htmlFor="start-date">Start Month:</label>
-				<input
-					type="month"
-					id="start-date"
-					value={format(startDate, "yyyy-MM")}
-					onChange={handleStartDateChange}
-				/>
-			</div>
-			<div className="setting-item">
-				<label htmlFor="include-weekends">Include Weekends:</label>
-				<input
-					type="checkbox"
-					id="include-weekends"
-					checked={includeWeekends}
-					onChange={(e) => setIncludeWeekends(e.target.checked)}
-				/>
-			</div>
-			<div className="setting-item">
-				<label htmlFor="show-today">Highlight Today:</label>
-				<input
-					type="checkbox"
-					id="show-today"
-					checked={showToday}
-					onChange={(e) => setShowToday(e.target.checked)}
-				/>
-			</div>
 
 			<h3>
 				Event Groups ({eventGroups.length}/{MAX_GROUPS})
@@ -108,63 +80,110 @@ function Sidebar() {
 						key={group.id}
 						className={`event-group-item ${
 							selectedGroupId === group.id ? "selected" : ""
-						}`}
-						onClick={() => selectEventGroup(group.id)}
+						} ${editingGroup?.id === group.id ? "editing" : ""}`}
+						onClick={() =>
+							editingGroup?.id !== group.id && selectEventGroup(group.id)
+						}
 					>
 						<span
 							className="color-indicator"
 							style={{ backgroundColor: group.color }}
 						></span>
 						{editingGroup?.id === group.id ? (
-							<span>Editing...</span>
+							<div className="inline-edit">
+								<input
+									type="text"
+									value={newEventName}
+									onChange={(e) => setNewEventName(e.target.value)}
+									onClick={(e) => e.stopPropagation()}
+									autoFocus
+								/>
+								<button
+									onClick={(e) => {
+										e.stopPropagation();
+										handleUpdateGroup();
+									}}
+								>
+									Save
+								</button>
+								<button
+									onClick={(e) => {
+										e.stopPropagation();
+										handleCancelEdit();
+									}}
+								>
+									Cancel
+								</button>
+							</div>
 						) : (
-							<span>{group.name}</span>
+							<>
+								<span className="group-name">{group.name}</span>
+								<div className="group-actions">
+									<button
+										onClick={(e) => {
+											e.stopPropagation();
+											handleEditClick(group);
+										}}
+										disabled={!!editingGroup}
+									>
+										Edit
+									</button>
+									<button
+										onClick={(e) => {
+											e.stopPropagation();
+											deleteEventGroup(group.id);
+										}}
+										disabled={!!editingGroup}
+									>
+										Delete
+									</button>
+								</div>
+							</>
 						)}
-						<div>
-							<button
-								onClick={(e) => {
-									e.stopPropagation();
-									handleEditClick(group);
-								}}
-								disabled={!!editingGroup}
-							>
-								Edit
-							</button>
-							<button
-								onClick={(e) => {
-									e.stopPropagation();
-									deleteEventGroup(group.id);
-								}}
-								disabled={!!editingGroup}
-							>
-								Delete
-							</button>
-						</div>
 					</div>
 				))}
 			</div>
 
 			{eventGroups.length < MAX_GROUPS && (
-				<div className="add-event-group">
-					<h3>{editingGroup ? "Edit Event Group" : "Add New Event Group"}</h3>
-					<input
-						type="text"
-						placeholder="Group Name"
-						value={newEventName}
-						onChange={(e) => setNewEventName(e.target.value)}
-					/>
-					{editingGroup ? (
-						<div>
-							<button onClick={handleUpdateGroup}>Update Group</button>
-							<button onClick={handleCancelEdit}>Cancel</button>
-						</div>
-					) : (
-						<button onClick={handleAddGroup} disabled={!newEventName.trim()}>
-							Add Group
-						</button>
-					)}
-				</div>
+				<button
+					className="add-group-button"
+					onClick={handleAddGroup}
+					disabled={!!editingGroup}
+				>
+					Add Group (+)
+				</button>
 			)}
+
+			<>
+				<h3>Settings</h3>
+				<div className="setting-item">
+					<label htmlFor="start-date">Start Month:</label>
+					<input
+						type="month"
+						id="start-date"
+						value={format(startDate, "yyyy-MM")}
+						onChange={handleStartDateChange}
+					/>
+				</div>
+				<div className="setting-item">
+					<label htmlFor="include-weekends">Include Weekends:</label>
+					<input
+						type="checkbox"
+						id="include-weekends"
+						checked={includeWeekends}
+						onChange={(e) => setIncludeWeekends(e.target.checked)}
+					/>
+				</div>
+				<div className="setting-item">
+					<label htmlFor="show-today">Highlight Today:</label>
+					<input
+						type="checkbox"
+						id="show-today"
+						checked={showToday}
+						onChange={(e) => setShowToday(e.target.checked)}
+					/>
+				</div>
+			</>
 		</div>
 	);
 }
