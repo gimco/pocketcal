@@ -176,20 +176,19 @@ const Calendar: React.FC = () => {
 
 	const getRangeStyles = (date: Date): React.CSSProperties[] => {
 		const styles: React.CSSProperties[] = [];
-
-		// Count how many groups have this date
 		const groupsWithDate = eventGroups.filter((group) =>
 			isDateInRange(date, group)
 		);
-		const hasMultipleGroups = groupsWithDate.length > 1;
 
-		groupsWithDate.forEach((group) => {
+		const totalGroups = groupsWithDate.length;
+		groupsWithDate.forEach((group, index) => {
 			styles.push({
-				backgroundColor: group.color + (hasMultipleGroups ? "80" : ""),
+				backgroundColor: group.color,
 				position: "absolute",
 				left: 0,
 				right: 0,
-				opacity: hasMultipleGroups ? 0.7 : 1,
+				top: `${(index / totalGroups) * 100}%`,
+				height: `${100 / totalGroups}%`,
 			});
 		});
 

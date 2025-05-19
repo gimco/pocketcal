@@ -13,11 +13,11 @@ import {
 export const MAX_GROUPS = 5;
 
 export const GROUP_COLORS = [
-	{ hex: "#e4002b", rgb: "rgb(228, 0, 43)" }, // red
+	{ hex: "#8a35de", rgb: "rgb(138, 53, 222)" }, // purple
 	{ hex: "#10a2f5", rgb: "rgb(16, 162, 245)" }, // blue
-	{ hex: "#24d05a", rgb: "rgb(36, 208, 90)" }, // green
-	{ hex: "#e9bc3f", rgb: "rgb(233, 188, 63)" }, // yellow
 	{ hex: "#eb4888", rgb: "rgb(235, 72, 136)" }, // pink
+	{ hex: "#e9bc3f", rgb: "rgb(233, 188, 63)" }, // yellow
+	{ hex: "#24d05a", rgb: "rgb(36, 208, 90)" }, // green
 ];
 
 export interface DateRange {

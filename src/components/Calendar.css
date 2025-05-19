@@ -60,7 +60,8 @@
 }
 
 .calendar-day {
-	background-color: white;
+	background-color: #ffffff;
+	border: 1px solid transparent;
 	min-height: 24px;
 	height: 24px;
 	padding: 2px;
@@ -89,7 +90,7 @@
 .calendar-day.today .day-number {
 	color: #333;
 	font-weight: bold;
-	border: 2px solid #e4002b;
+	border: 2px solid #eb4888;
 	border-radius: 50%;
 	box-sizing: border-box;
 	width: 20px;
@@ -109,6 +110,7 @@
 
 .calendar-day.dragging {
 	background-color: #e3f2fd;
+	border: 1px dashed #2196f3;
 }
 
 .day-number {
@@ -140,7 +142,8 @@
 
 .range-indicator {
 	position: absolute;
-	inset: 0;
+	left: 0;
+	right: 0;
 	border-radius: 2px;
 	transition: opacity 0.5s ease;
 }
