@@ -83,27 +83,6 @@
 	flex-shrink: 0;
 }
 
-.event-group-item .inline-edit {
-	display: flex;
-	flex-grow: 1;
-	gap: 4px;
-	align-items: center;
-}
-
-.event-group-item .inline-edit input[type="text"] {
-	flex-grow: 1;
-	padding: 3px 5px;
-	border: 1px solid #ccc;
-	border-radius: 3px;
-	min-width: 50px;
-}
-
-.event-group-item .inline-edit button {
-	padding: 2px 5px;
-	font-size: 0.8em;
-	flex-shrink: 0;
-}
-
 .event-group-item.editing {
 	cursor: default;
 }
@@ -124,12 +103,20 @@
 	border-radius: 50%;
 	margin-right: 8px;
 	border: 1px solid #ccc;
+	flex-shrink: 0; /* Ensure color indicator doesn't shrink */
 }
 
 .event-group-item button {
 	margin-left: 5px;
-	padding: 2px 5px;
+	padding: 0; /* Adjust padding */
 	font-size: 0.8em;
+	background-color: transparent; /* Transparent background */
+	border: none; /* No border */
+	cursor: pointer; /* Pointer cursor */
+}
+
+.event-group-item button:hover svg {
+	opacity: 0.7; /* Example hover effect on the SVG icon */
 }
 
 .add-group-button {
@@ -137,6 +124,17 @@
 	padding: 8px 12px;
 	width: 100%;
 	box-sizing: border-box;
+}
+
+input {
+	background-color: #fff;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	color: #000;
+}
+
+input[type="month"]::-webkit-calendar-picker-indicator {
+	filter: brightness(0);
 }
 
 @media (max-width: 768px) {
@@ -163,15 +161,6 @@
 		margin-right: 0;
 		margin-bottom: 5px;
 		flex-basis: 100%;
-	}
-
-	.event-group-item .inline-edit {
-		flex-wrap: wrap;
-		width: 100%;
-	}
-
-	.event-group-item .inline-edit input[type="text"] {
-		flex-basis: calc(100% - 110px);
-		margin-bottom: 5px;
+		max-width: 138px;
 	}
 }

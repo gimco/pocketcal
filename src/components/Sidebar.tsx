@@ -101,7 +101,7 @@ function Sidebar() {
 							style={{ backgroundColor: group.color }}
 						></span>
 						{editingGroup?.id === group.id ? (
-							<div className="inline-edit">
+							<>
 								<input
 									type="text"
 									value={newEventName}
@@ -115,7 +115,7 @@ function Sidebar() {
 										handleUpdateGroup();
 									}}
 								>
-									<SaveIcon />
+									<SaveIcon color="#000" />
 								</button>
 								<button
 									onClick={(e) => {
@@ -123,9 +123,9 @@ function Sidebar() {
 										handleCancelEdit();
 									}}
 								>
-									<XIcon />
+									<XIcon color="#000" />
 								</button>
-							</div>
+							</>
 						) : (
 							<>
 								<span className="group-name">{group.name}</span>
@@ -137,7 +137,7 @@ function Sidebar() {
 										}}
 										disabled={!!editingGroup}
 									>
-										<PencilIcon />
+										<PencilIcon color="#000" />
 									</button>
 									<button
 										onClick={(e) => {
@@ -146,7 +146,7 @@ function Sidebar() {
 										}}
 										disabled={!!editingGroup}
 									>
-										<TrashIcon />
+										<TrashIcon color="#000" />
 									</button>
 								</div>
 							</>
