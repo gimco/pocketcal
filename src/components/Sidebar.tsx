@@ -1,6 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useStore, EventGroup, MAX_GROUPS } from "../store";
 import { format } from "date-fns";
+import CalIcon from "./icons/CalIcon";
+import PencilIcon from "./icons/PencilIcon";
+import TrashIcon from "./icons/TrashIcon";
+import XIcon from "./icons/XIcon";
+import SaveIcon from "./icons/SaveIcon";
+import PlusIcon from "./icons/PlusIcon";
+import SettingsIcon from "./icons/SettingsIcon";
+
 import "./Sidebar.css";
 
 function Sidebar() {
@@ -69,9 +77,12 @@ function Sidebar() {
 
 	return (
 		<div className="sidebar">
-			<h2>PocketCal</h2>
+			<h2>
+				Pocket<span>Cal</span>
+			</h2>
 
 			<h3>
+				<CalIcon height={20} />
 				Event Groups ({eventGroups.length}/{MAX_GROUPS})
 			</h3>
 			<div className="event-groups-list">
@@ -104,7 +115,7 @@ function Sidebar() {
 										handleUpdateGroup();
 									}}
 								>
-									Save
+									<SaveIcon />
 								</button>
 								<button
 									onClick={(e) => {
@@ -112,7 +123,7 @@ function Sidebar() {
 										handleCancelEdit();
 									}}
 								>
-									Cancel
+									<XIcon />
 								</button>
 							</div>
 						) : (
@@ -126,7 +137,7 @@ function Sidebar() {
 										}}
 										disabled={!!editingGroup}
 									>
-										Edit
+										<PencilIcon />
 									</button>
 									<button
 										onClick={(e) => {
@@ -135,7 +146,7 @@ function Sidebar() {
 										}}
 										disabled={!!editingGroup}
 									>
-										Delete
+										<TrashIcon />
 									</button>
 								</div>
 							</>
@@ -150,12 +161,14 @@ function Sidebar() {
 					onClick={handleAddGroup}
 					disabled={!!editingGroup}
 				>
-					Add Group (+)
+					<PlusIcon height={12} /> Add group
 				</button>
 			)}
 
 			<>
-				<h3>Settings</h3>
+				<h3>
+					<SettingsIcon height={20} /> Settings
+				</h3>
 				<div className="setting-item">
 					<label htmlFor="start-date">Start Month:</label>
 					<input
