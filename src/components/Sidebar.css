@@ -103,20 +103,20 @@
 	border-radius: 50%;
 	margin-right: 8px;
 	border: 1px solid #ccc;
-	flex-shrink: 0; /* Ensure color indicator doesn't shrink */
+	flex-shrink: 0;
 }
 
 .event-group-item button {
 	margin-left: 5px;
-	padding: 0; /* Adjust padding */
+	padding: 0;
 	font-size: 0.8em;
-	background-color: transparent; /* Transparent background */
-	border: none; /* No border */
-	cursor: pointer; /* Pointer cursor */
+	background-color: transparent;
+	border: none;
+	cursor: pointer;
 }
 
 .event-group-item button:hover svg {
-	opacity: 0.7; /* Example hover effect on the SVG icon */
+	opacity: 0.7;
 }
 
 .add-group-button {
