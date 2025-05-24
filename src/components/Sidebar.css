@@ -59,6 +59,10 @@
 	align-items: center;
 }
 
+.setting-item input {
+	max-width: 50%;
+}
+
 .event-groups-list {
 	display: flex;
 	flex-direction: column;
@@ -87,6 +91,7 @@
 
 .event-group-item .group-actions {
 	display: flex;
+	justify-content: flex-end;
 	gap: 4px;
 	flex-shrink: 0;
 }
@@ -151,10 +156,18 @@ input {
 	border: 1px solid #ccc;
 	border-radius: 4px;
 	color: #000;
+	font-size: 1em;
 }
 
 input[type="month"]::-webkit-calendar-picker-indicator {
 	filter: brightness(0);
+}
+
+input.group-name-input {
+	flex-grow: 1;
+	margin-right: 8px;
+	width: auto;
+	max-width: 158px;
 }
 
 @media (max-width: 768px) {
@@ -181,6 +194,10 @@ input[type="month"]::-webkit-calendar-picker-indicator {
 		margin-right: 0;
 		margin-bottom: 5px;
 		flex-basis: 100%;
-		max-width: 138px;
+		max-width: calc(100% - 104px);
+	}
+
+	input.group-name-input {
+		max-width: 100%;
 	}
 }

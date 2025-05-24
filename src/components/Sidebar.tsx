@@ -108,23 +108,28 @@ function Sidebar() {
 									onChange={(e) => setNewEventName(e.target.value)}
 									onClick={(e) => e.stopPropagation()}
 									autoFocus
+									className="group-name-input"
 								/>
-								<button
-									onClick={(e) => {
-										e.stopPropagation();
-										handleUpdateGroup();
-									}}
-								>
-									<SaveIcon color="#000" />
-								</button>
-								<button
-									onClick={(e) => {
-										e.stopPropagation();
-										handleCancelEdit();
-									}}
-								>
-									<XIcon color="#000" />
-								</button>
+								<div className="group-actions">
+									<button
+										onClick={(e) => {
+											e.stopPropagation();
+											handleUpdateGroup();
+										}}
+										className="save-button"
+									>
+										<SaveIcon color="#000" />
+									</button>
+									<button
+										onClick={(e) => {
+											e.stopPropagation();
+											handleCancelEdit();
+										}}
+										className="cancel-button"
+									>
+										<XIcon color="#000" />
+									</button>
+								</div>
 							</>
 						) : (
 							<>
@@ -136,6 +141,7 @@ function Sidebar() {
 											handleEditClick(group);
 										}}
 										disabled={!!editingGroup}
+										className="edit-button"
 									>
 										<PencilIcon color="#000" />
 									</button>
@@ -145,6 +151,7 @@ function Sidebar() {
 											deleteEventGroup(group.id);
 										}}
 										disabled={!!editingGroup}
+										className="delete-button"
 									>
 										<TrashIcon color="#000" />
 									</button>

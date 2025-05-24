@@ -34,16 +34,23 @@ function App() {
 	]);
 
 	const toggleSidebar = () => {
-		setIsSidebarHidden(!isSidebarHidden);
-		document
-			.querySelector(".sidebar")
-			?.scrollTo({ top: 0, behavior: "smooth" });
+		const sidebar = document.querySelector(".sidebar");
+
+		if (!isSidebarHidden && sidebar) {
+			sidebar.scrollTo({ top: 0, behavior: "smooth" });
+
+			setTimeout(() => {
+				setIsSidebarHidden(true);
+			}, 100);
+		} else {
+			setIsSidebarHidden(false);
+		}
 	};
 
 	return (
 		<div className={`app-container ${isSidebarHidden ? "sidebar-hidden" : ""}`}>
 			<button className="sidebar-toggle" onClick={toggleSidebar}>
-				<ChevronIcon />
+				<ChevronIcon color="black" />
 			</button>
 			<Sidebar />
 			<Calendar />
