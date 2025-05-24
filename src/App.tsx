@@ -35,6 +35,9 @@ function App() {
 
 	const toggleSidebar = () => {
 		setIsSidebarHidden(!isSidebarHidden);
+		document
+			.querySelector(".sidebar")
+			?.scrollTo({ top: 0, behavior: "smooth" });
 	};
 
 	return (
