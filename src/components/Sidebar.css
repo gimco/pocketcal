@@ -120,10 +120,22 @@
 }
 
 .add-group-button {
-	margin-top: 10px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 5px;
 	padding: 8px 12px;
 	width: 100%;
 	box-sizing: border-box;
+	background: transparent;
+	color: #333;
+	font-size: 0.85em;
+}
+
+.add-group-button:hover {
+	background-color: #f0f0f0;
+	border-color: transparent;
+	transition: background-color 0.3s ease;
 }
 
 input {

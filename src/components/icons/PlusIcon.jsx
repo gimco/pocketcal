@@ -13,7 +13,7 @@ const PlusIcon = ({ width = 24, height = 24, color = "currentColor" }) => {
 			strokeLinejoin="round"
 			xmlns="http://www.w3.org/2000/svg"
 		>
-			<path d="M12 4v16m8-8H4"></path>
+			<path d="M12 3a9 9 0 11-6.364 2.636A8.972 8.972 0 0112 3zm0 5v8m-4-4h8"></path>
 		</svg>
 	);
 };

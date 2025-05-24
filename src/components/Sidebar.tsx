@@ -77,7 +77,7 @@ function Sidebar() {
 
 	return (
 		<div className="sidebar">
-			<h2>
+			<h2 className="logo">
 				Pocket<span>Cal</span>
 			</h2>
 
@@ -161,7 +161,7 @@ function Sidebar() {
 					onClick={handleAddGroup}
 					disabled={!!editingGroup}
 				>
-					<PlusIcon height={12} /> Add group
+					<PlusIcon height={18} /> Add new group
 				</button>
 			)}
 
