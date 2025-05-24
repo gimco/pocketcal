@@ -49,7 +49,12 @@ function App() {
 
 	return (
 		<div className={`app-container ${isSidebarHidden ? "sidebar-hidden" : ""}`}>
-			<button className="sidebar-toggle" onClick={toggleSidebar}>
+			<button
+				className="sidebar-toggle"
+				onClick={toggleSidebar}
+				aria-label={isSidebarHidden ? "Show sidebar" : "Hide sidebar"}
+				aria-expanded={!isSidebarHidden}
+			>
 				<ChevronIcon color="black" />
 			</button>
 			<Sidebar />

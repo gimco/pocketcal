@@ -63,6 +63,15 @@ function Sidebar() {
 		setNewEventName("");
 	};
 
+	const handleKeyDown = (e: React.KeyboardEvent, group: EventGroup) => {
+		if (e.key === "Enter" || e.key === " ") {
+			e.preventDefault();
+			if (editingGroup?.id !== group.id) {
+				selectEventGroup(group.id);
+			}
+		}
+	};
+
 	const handleStartDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		try {
 			const [year, month] = e.target.value.split("-").map(Number);
@@ -85,7 +94,7 @@ function Sidebar() {
 				<CalIcon height={20} />
 				Event Groups ({eventGroups.length}/{MAX_GROUPS})
 			</h3>
-			<div className="event-groups-list">
+			<div className="event-groups-list" role="list">
 				{eventGroups.map((group) => (
 					<div
 						key={group.id}
@@ -95,6 +104,11 @@ function Sidebar() {
 						onClick={() =>
 							editingGroup?.id !== group.id && selectEventGroup(group.id)
 						}
+						onKeyDown={(e) => handleKeyDown(e, group)}
+						tabIndex={editingGroup?.id !== group.id ? 0 : -1}
+						role="listitem"
+						aria-selected={selectedGroupId === group.id}
+						aria-label={`Event group: ${group.name}`}
 					>
 						<span
 							className="color-indicator"
@@ -107,8 +121,16 @@ function Sidebar() {
 									value={newEventName}
 									onChange={(e) => setNewEventName(e.target.value)}
 									onClick={(e) => e.stopPropagation()}
+									onKeyDown={(e) => {
+										if (e.key === "Enter") {
+											handleUpdateGroup();
+										} else if (e.key === "Escape") {
+											handleCancelEdit();
+										}
+									}}
 									autoFocus
 									className="group-name-input"
+									aria-label="Edit group name"
 								/>
 								<div className="group-actions">
 									<button
@@ -117,6 +139,7 @@ function Sidebar() {
 											handleUpdateGroup();
 										}}
 										className="save-button"
+										aria-label="Save group name"
 									>
 										<SaveIcon color="#000" />
 									</button>
@@ -126,6 +149,7 @@ function Sidebar() {
 											handleCancelEdit();
 										}}
 										className="cancel-button"
+										aria-label="Cancel editing"
 									>
 										<XIcon color="#000" />
 									</button>
@@ -142,6 +166,7 @@ function Sidebar() {
 										}}
 										disabled={!!editingGroup}
 										className="edit-button"
+										aria-label={`Edit ${group.name}`}
 									>
 										<PencilIcon color="#000" />
 									</button>
@@ -152,6 +177,7 @@ function Sidebar() {
 										}}
 										disabled={!!editingGroup}
 										className="delete-button"
+										aria-label={`Delete ${group.name}`}
 									>
 										<TrashIcon color="#000" />
 									</button>

@@ -156,3 +156,18 @@
 .range-indicator:hover {
 	opacity: 0.9;
 }
+
+.calendar-container:focus {
+	outline: 2px solid rgba(138, 53, 222, 0.5);
+	outline-offset: 2px;
+}
+
+.calendar-container:focus:not(:focus-visible) {
+	outline: none;
+}
+
+.calendar-day.focused {
+	outline: 2px solid rgba(138, 53, 222, 0.8);
+	outline-offset: -2px;
+	z-index: 3;
+}
