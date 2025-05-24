@@ -1,6 +1,11 @@
 import React from "react";
+import { IconProps } from "./SharedProps";
 
-const CalIcon = ({ width = 24, height = 24, color = "currentColor" }) => {
+const XIcon: React.FC<IconProps> = ({
+	width = 24,
+	height = 24,
+	color = "currentColor",
+}) => {
 	return (
 		<svg
 			width={width}
@@ -13,9 +18,9 @@ const CalIcon = ({ width = 24, height = 24, color = "currentColor" }) => {
 			strokeLinejoin="round"
 			xmlns="http://www.w3.org/2000/svg"
 		>
-			<path d="M5 5h14a2 2 0 012 2v12a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2zm11-2v4M8 3v4m-5 3h18"></path>
+			<path d="M5.636 5.636l12.728 12.728m-12.728 0L18.364 5.636m0 0"></path>
 		</svg>
 	);
 };
 
-export default CalIcon;
+export default XIcon;

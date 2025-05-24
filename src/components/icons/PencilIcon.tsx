@@ -1,6 +1,11 @@
 import React from "react";
+import { IconProps } from "./SharedProps";
 
-const PencilIcon = ({ width = 24, height = 24, color = "currentColor" }) => {
+const PencilIcon: React.FC<IconProps> = ({
+	width = 24,
+	height = 24,
+	color = "currentColor",
+}) => {
 	return (
 		<svg
 			width={width}

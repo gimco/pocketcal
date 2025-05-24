@@ -1,6 +1,11 @@
 import React from "react";
+import { IconProps } from "./SharedProps";
 
-const TrashIcon = ({ width = 24, height = 24, color = "currentColor" }) => {
+const TrashIcon: React.FC<IconProps> = ({
+	width = 24,
+	height = 24,
+	color = "currentColor",
+}) => {
 	return (
 		<svg
 			width={width}

@@ -1,6 +1,11 @@
 import React from "react";
+import { IconProps } from "./SharedProps";
 
-const SettingsIcon = ({ width = 24, height = 24, color = "currentColor" }) => {
+const PlusIcon: React.FC<IconProps> = ({
+	width = 24,
+	height = 24,
+	color = "currentColor",
+}) => {
 	return (
 		<svg
 			width={width}
@@ -13,9 +18,9 @@ const SettingsIcon = ({ width = 24, height = 24, color = "currentColor" }) => {
 			strokeLinejoin="round"
 			xmlns="http://www.w3.org/2000/svg"
 		>
-			<path d="M15.492 15.842H21m-2.754 0V21m0-18v9.16M3 13.871h5.508m-2.754 0V21m0-18v7.189m9-2.031H9.246m2.754 0V3m0 18v-9.16"></path>
+			<path d="M12 3a9 9 0 11-6.364 2.636A8.972 8.972 0 0112 3zm0 5v8m-4-4h8"></path>
 		</svg>
 	);
 };
 
-export default SettingsIcon;
+export default PlusIcon;
