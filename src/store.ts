@@ -21,8 +21,8 @@ export const GROUP_COLORS = [
 ];
 
 export interface DateRange {
-	start: string; // ISO string format
-	end: string; // ISO string format
+	start: string;
+	end: string;
 }
 
 export interface EventGroup {
@@ -56,7 +56,7 @@ interface AppState {
 	generateShareableUrl: () => string;
 }
 
-const defaultStartDate = startOfMonth(new Date()); // Start from the beginning of the current month
+const defaultStartDate = startOfMonth(new Date());
 
 // Create a function to generate the default event group
 const createDefaultEventGroup = (index = 0): EventGroup => ({
@@ -99,7 +99,7 @@ export const useStore = create<AppState>((set, get) => ({
 			);
 
 			if (!availableColor) {
-				return state; // Don't add if no colors available (shouldn't happen with MAX_GROUPS)
+				return state;
 			}
 
 			newGroup = {
@@ -206,12 +206,10 @@ export const useStore = create<AppState>((set, get) => ({
 			}
 		} catch (error) {
 			console.error("Failed to parse state from URL:", error);
-			// Reset to default state with the default group
 			set(getDefaultState());
 		}
 	},
 
-	// Function to generate shareable URL
 	generateShareableUrl: () => {
 		const stateToShare = {
 			startDate: formatISO(get().startDate, { representation: "date" }),
@@ -225,7 +223,6 @@ export const useStore = create<AppState>((set, get) => ({
 	},
 }));
 
-// Helper function to check if a date falls within any range of a specific group
 export const isDateInRange = (date: Date, group: EventGroup): boolean => {
 	return group.ranges.some((range) =>
 		isWithinInterval(date, {
@@ -235,7 +232,6 @@ export const isDateInRange = (date: Date, group: EventGroup): boolean => {
 	);
 };
 
-// Helper function to find which range contains a specific date
 export const findRangeForDate = (
 	date: Date,
 	group: EventGroup
@@ -250,7 +246,6 @@ export const findRangeForDate = (
 	);
 };
 
-// Helper function to get all dates within a 12-month period
 export const getCalendarDates = (startDate: Date): Date[] => {
 	const endDate = addMonths(startDate, 11);
 	// Ensure we get the full end month
@@ -262,12 +257,10 @@ export const getCalendarDates = (startDate: Date): Date[] => {
 	return eachDayOfInterval({ start: startDate, end: endOfMonthDate });
 };
 
-// Helper function to format date for display (e.g., 'Apr 17')
 export const formatDateDisplay = (date: Date): string => {
-	return formatISO(date, { representation: "date" }); // Keep ISO for now, simplify later if needed
+	return formatISO(date, { representation: "date" });
 };
 
-// Helper function to check if two dates are the same day
 export const checkSameDay = (date1: Date, date2: Date): boolean => {
 	return isSameDay(date1, date2);
 };

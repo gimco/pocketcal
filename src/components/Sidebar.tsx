@@ -77,9 +77,9 @@ function Sidebar() {
 
 	return (
 		<div className="sidebar">
-			<h2 className="logo">
+			<h1 className="logo">
 				Pocket<span>Cal</span>
-			</h2>
+			</h1>
 
 			<h3>
 				<CalIcon height={20} />
