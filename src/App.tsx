@@ -3,6 +3,7 @@ import "./App.css";
 import { useStore } from "./store";
 import Sidebar from "./components/Sidebar";
 import Calendar from "./components/Calendar";
+import ChevronIcon from "./components/icons/ChevronIcon";
 
 function App() {
 	const [isSidebarHidden, setIsSidebarHidden] = useState(false);
@@ -39,7 +40,7 @@ function App() {
 	return (
 		<div className={`app-container ${isSidebarHidden ? "sidebar-hidden" : ""}`}>
 			<button className="sidebar-toggle" onClick={toggleSidebar}>
-				{isSidebarHidden ? "☰" : "✕"}
+				<ChevronIcon />
 			</button>
 			<Sidebar />
 			<Calendar />
