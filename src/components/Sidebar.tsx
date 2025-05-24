@@ -64,7 +64,7 @@ function Sidebar() {
 	};
 
 	const handleKeyDown = (e: React.KeyboardEvent, group: EventGroup) => {
-		if (e.key === "Enter" || e.key === " ") {
+		if (e.key === "Enter") {
 			e.preventDefault();
 			if (editingGroup?.id !== group.id) {
 				selectEventGroup(group.id);
