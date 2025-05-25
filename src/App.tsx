@@ -37,11 +37,12 @@ function App() {
 		const sidebar = document.querySelector(".sidebar");
 
 		if (!isSidebarHidden && sidebar) {
+			sidebar.scrollTop = 0;
 			sidebar.scrollTo({ top: 0, behavior: "smooth" });
 
 			setTimeout(() => {
 				setIsSidebarHidden(true);
-			}, 100);
+			}, 300);
 		} else {
 			setIsSidebarHidden(false);
 		}

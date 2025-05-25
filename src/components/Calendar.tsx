@@ -44,18 +44,34 @@ const Calendar: React.FC = () => {
 	const [focusedDate, setFocusedDate] = useState<Date | null>(null);
 	const [keyboardSelectionStart, setKeyboardSelectionStart] =
 		useState<Date | null>(null);
+	const [isContainerFocused, setIsContainerFocused] = useState(false);
 	const calendarGridRef = useRef<HTMLDivElement>(null);
 
 	// Focus management
 	useEffect(() => {
-		// Set initial focus to today or first date of the calendar
+		// Only set initial focus when container is focused
+		if (isContainerFocused && !focusedDate && calendarDates.length > 0) {
+			const todayInCalendar = calendarDates.find((date) =>
+				checkSameDay(date, today)
+			);
+			setFocusedDate(todayInCalendar || calendarDates[0]);
+		}
+	}, [calendarDates, focusedDate, today, isContainerFocused]);
+
+	const handleContainerFocus = () => {
+		setIsContainerFocused(true);
+		// Set initial focused date if not already set
 		if (!focusedDate && calendarDates.length > 0) {
 			const todayInCalendar = calendarDates.find((date) =>
 				checkSameDay(date, today)
 			);
 			setFocusedDate(todayInCalendar || calendarDates[0]);
 		}
-	}, [calendarDates, focusedDate, today]);
+	};
+
+	const handleContainerBlur = () => {
+		setIsContainerFocused(false);
+	};
 
 	const handleKeyDown = (e: React.KeyboardEvent) => {
 		if (!focusedDate || !selectedGroupId) return;
@@ -354,6 +370,8 @@ const Calendar: React.FC = () => {
 			ref={calendarGridRef}
 			onKeyDown={handleKeyDown}
 			onKeyUp={handleKeyUp}
+			onFocus={handleContainerFocus}
+			onBlur={handleContainerBlur}
 			tabIndex={0}
 			role="application"
 			aria-label="Calendar grid. Use arrow keys to navigate dates and space or enter to select."
