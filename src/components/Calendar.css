@@ -21,6 +21,7 @@
 @media (max-width: 530px) {
 	.calendar-container {
 		grid-template-columns: repeat(auto-fit, 100%);
+		width: 100%;
 	}
 }
 
