@@ -10,7 +10,6 @@ import PlusIcon from "./icons/PlusIcon";
 import SettingsIcon from "./icons/SettingsIcon";
 import HelpIcon from "./icons/HelpIcon";
 import CopyIcon from "./icons/CopyIcon";
-import HelpModal from "./HelpModal";
 
 import "./Sidebar.css";
 
@@ -24,6 +23,7 @@ function Sidebar() {
 		setStartDate,
 		setIncludeWeekends,
 		setShowToday,
+		setShowHelpModal,
 		addEventGroup,
 		updateEventGroup,
 		deleteEventGroup,
@@ -32,7 +32,6 @@ function Sidebar() {
 
 	const [newEventName, setNewEventName] = useState("");
 	const [editingGroup, setEditingGroup] = useState<EventGroup | null>(null);
-	const [showInstructions, setShowInstructions] = useState(false);
 
 	// Add effect to select the first group if none is selected
 	useEffect(() => {
@@ -40,23 +39,6 @@ function Sidebar() {
 			selectEventGroup(eventGroups[0].id);
 		}
 	}, [selectedGroupId, eventGroups, selectEventGroup]);
-
-	// Add effect to handle Escape key for closing instructions modal
-	useEffect(() => {
-		const handleEscape = (e: KeyboardEvent) => {
-			if (e.key === "Escape" && showInstructions) {
-				setShowInstructions(false);
-			}
-		};
-
-		if (showInstructions) {
-			document.addEventListener("keydown", handleEscape);
-		}
-
-		return () => {
-			document.removeEventListener("keydown", handleEscape);
-		};
-	}, [showInstructions]);
 
 	const handleAddGroup = () => {
 		if (eventGroups.length < MAX_GROUPS) {
@@ -260,7 +242,7 @@ function Sidebar() {
 			<div className="sidebar-footer-buttons">
 				<button
 					className="footer-button"
-					onClick={() => setShowInstructions(true)}
+					onClick={() => setShowHelpModal(true)}
 					aria-label="Show instructions"
 				>
 					<HelpIcon /> Help
@@ -273,10 +255,6 @@ function Sidebar() {
 					<CopyIcon /> Copy URL
 				</button>
 			</div>
-
-			{showInstructions && (
-				<HelpModal onClose={() => setShowInstructions(false)} />
-			)}
 		</div>
 	);
 }

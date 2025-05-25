@@ -35,10 +35,8 @@ const HelpModal: React.FC<HelpModalProps> = ({ onClose }) => {
 							focused
 						</li>
 						<li>
-							<strong>Enter</strong> to select/activate focused element
-						</li>
-						<li>
-							<strong>Escape</strong> to cancel editing
+							<strong>Enter</strong> or <strong>Space</strong> to toggle the
+							selected date
 						</li>
 					</ul>
 					<h3>Features</h3>

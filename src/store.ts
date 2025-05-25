@@ -38,9 +38,11 @@ interface AppState {
 	showToday: boolean;
 	eventGroups: EventGroup[];
 	selectedGroupId: string | null;
+	showHelpModal: boolean; // Add this
 	setStartDate: (date: Date) => void;
 	setIncludeWeekends: (include: boolean) => void;
 	setShowToday: (show: boolean) => void;
+	setShowHelpModal: (show: boolean) => void; // Add this
 	addEventGroup: (name: string) => EventGroup;
 	updateEventGroup: (id: string, name: string) => void;
 	deleteEventGroup: (id: string) => void;
@@ -79,11 +81,13 @@ const getDefaultState = () => {
 };
 
 export const useStore = create<AppState>((set, get) => ({
-	...getDefaultState(), // Use default state for initial values
+	...getDefaultState(),
+	showHelpModal: false,
 
 	setStartDate: (date) => set({ startDate: startOfMonth(date) }),
 	setIncludeWeekends: (include) => set({ includeWeekends: include }),
 	setShowToday: (show) => set({ showToday: show }),
+	setShowHelpModal: (show) => set({ showHelpModal: show }),
 
 	addEventGroup: (name) => {
 		let newGroup: EventGroup | null = null;

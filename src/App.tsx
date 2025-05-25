@@ -4,11 +4,14 @@ import { useStore } from "./store";
 import Sidebar from "./components/Sidebar";
 import Calendar from "./components/Calendar";
 import ChevronIcon from "./components/icons/ChevronIcon";
+import HelpModal from "./components/HelpModal";
 
 function App() {
 	const [isSidebarHidden, setIsSidebarHidden] = useState(false);
 	const getAppStateFromUrl = useStore((state) => state.getAppStateFromUrl);
 	const generateShareableUrl = useStore((state) => state.generateShareableUrl);
+	const showHelpModal = useStore((state) => state.showHelpModal);
+	const setShowHelpModal = useStore((state) => state.setShowHelpModal);
 
 	// Select individual state pieces needed for the URL
 	const startDate = useStore((state) => state.startDate);
@@ -60,6 +63,7 @@ function App() {
 			</button>
 			<Sidebar />
 			<Calendar />
+			{showHelpModal && <HelpModal onClose={() => setShowHelpModal(false)} />}
 		</div>
 	);
 }
