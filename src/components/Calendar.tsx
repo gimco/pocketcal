@@ -210,6 +210,7 @@ const Calendar: React.FC = () => {
 
 	const handleMouseDown = (date: Date) => {
 		if (!selectedGroupId) return;
+		setFocusedDate(date);
 
 		const selectedGroup = eventGroups.find(
 			(group) => group.id === selectedGroupId

@@ -8,6 +8,8 @@ import XIcon from "./icons/XIcon";
 import SaveIcon from "./icons/SaveIcon";
 import PlusIcon from "./icons/PlusIcon";
 import SettingsIcon from "./icons/SettingsIcon";
+import HelpIcon from "./icons/HelpIcon";
+import CopyIcon from "./icons/CopyIcon";
 
 import "./Sidebar.css";
 
@@ -29,6 +31,7 @@ function Sidebar() {
 
 	const [newEventName, setNewEventName] = useState("");
 	const [editingGroup, setEditingGroup] = useState<EventGroup | null>(null);
+	const [showInstructions, setShowInstructions] = useState(false);
 
 	// Add effect to select the first group if none is selected
 	useEffect(() => {
@@ -36,6 +39,23 @@ function Sidebar() {
 			selectEventGroup(eventGroups[0].id);
 		}
 	}, [selectedGroupId, eventGroups, selectEventGroup]);
+
+	// Add effect to handle Escape key for closing instructions modal
+	useEffect(() => {
+		const handleEscape = (e: KeyboardEvent) => {
+			if (e.key === "Escape" && showInstructions) {
+				setShowInstructions(false);
+			}
+		};
+
+		if (showInstructions) {
+			document.addEventListener("keydown", handleEscape);
+		}
+
+		return () => {
+			document.removeEventListener("keydown", handleEscape);
+		};
+	}, [showInstructions]);
 
 	const handleAddGroup = () => {
 		if (eventGroups.length < MAX_GROUPS) {
@@ -70,6 +90,11 @@ function Sidebar() {
 				selectEventGroup(group.id);
 			}
 		}
+	};
+
+	const handleCopyUrl = () => {
+		navigator.clipboard.writeText(window.location.href);
+		// You could add a toast notification here if desired
 	};
 
 	const handleStartDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -230,6 +255,74 @@ function Sidebar() {
 					/>
 				</div>
 			</>
+
+			<div className="sidebar-footer-buttons">
+				<button
+					className="footer-button"
+					onClick={() => setShowInstructions(true)}
+					aria-label="Show instructions"
+				>
+					<HelpIcon /> Help
+				</button>
+				<button
+					className="footer-button"
+					onClick={handleCopyUrl}
+					aria-label="Copy URL to clipboard"
+				>
+					<CopyIcon /> Copy URL
+				</button>
+			</div>
+
+			{showInstructions && (
+				<div
+					className="modal-overlay"
+					onClick={() => setShowInstructions(false)}
+				>
+					<div className="modal-content" onClick={(e) => e.stopPropagation()}>
+						<button
+							className="modal-close"
+							onClick={() => setShowInstructions(false)}
+							aria-label="Close instructions"
+						>
+							<XIcon color="#000" />
+						</button>
+						<h2>
+							Pocket<span>Cal</span> Instructions
+						</h2>
+						<div className="instructions-content">
+							<h3>Navigation</h3>
+							<ul>
+								<li>
+									<strong>Click</strong> on any date to add/edit events
+								</li>
+								<li>
+									<strong>Tab</strong> to navigate between elements
+								</li>
+								<li>
+									<strong>Arrow keys</strong> to move between dates when
+									calendar is focused
+								</li>
+								<li>
+									<strong>Enter</strong> to select/activate focused element
+								</li>
+								<li>
+									<strong>Escape</strong> to cancel editing
+								</li>
+							</ul>
+							<h3>Features</h3>
+							<ul>
+								<li>
+									Create up to {MAX_GROUPS} event groups with different colors
+								</li>
+								<li>Click the pencil icon to edit group names</li>
+								<li>Toggle weekends on/off in settings</li>
+								<li>Highlight today's date with the checkbox</li>
+								<li>Your data is saved locally in your browser</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			)}
 		</div>
 	);
 }
