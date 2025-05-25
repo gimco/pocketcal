@@ -42,8 +42,6 @@ const Calendar: React.FC = () => {
 	const [dragStartDate, setDragStartDate] = useState<Date | null>(null);
 	const [dragEndDate, setDragEndDate] = useState<Date | null>(null);
 	const [focusedDate, setFocusedDate] = useState<Date | null>(null);
-	const [keyboardSelectionStart, setKeyboardSelectionStart] =
-		useState<Date | null>(null);
 	const [isContainerFocused, setIsContainerFocused] = useState(false);
 	const calendarGridRef = useRef<HTMLDivElement>(null);
 
@@ -110,11 +108,6 @@ const Calendar: React.FC = () => {
 				e.preventDefault();
 				handleDateSelection(focusedDate);
 				return;
-			case "Shift":
-				if (!keyboardSelectionStart) {
-					setKeyboardSelectionStart(focusedDate);
-				}
-				return;
 			default:
 				preventDefault = false;
 		}
@@ -127,41 +120,11 @@ const Calendar: React.FC = () => {
 			const newFocusedDate = filteredDates[newIndex];
 			setFocusedDate(newFocusedDate);
 
-			// Handle shift selection
-			if (e.shiftKey && keyboardSelectionStart) {
-				const startDate = isBefore(keyboardSelectionStart, newFocusedDate)
-					? keyboardSelectionStart
-					: newFocusedDate;
-				const endDate = isAfter(newFocusedDate, keyboardSelectionStart)
-					? newFocusedDate
-					: keyboardSelectionStart;
-
-				const newRange: DateRange = {
-					start: formatISO(startDate, { representation: "date" }),
-					end: formatISO(endDate, { representation: "date" }),
-				};
-
-				// Clear existing ranges and add new one
-				const selectedGroup = eventGroups.find((g) => g.id === selectedGroupId);
-				if (selectedGroup) {
-					selectedGroup.ranges.forEach((range) => {
-						deleteDateRange(selectedGroupId, range);
-					});
-				}
-				addDateRange(selectedGroupId, newRange);
-			}
-
 			// Scroll into view if needed
 			const dayElement = document.querySelector(
 				`[data-date="${formatISO(newFocusedDate, { representation: "date" })}"]`
 			);
 			dayElement?.scrollIntoView({ behavior: "smooth", block: "nearest" });
-		}
-	};
-
-	const handleKeyUp = (e: React.KeyboardEvent) => {
-		if (e.key === "Shift") {
-			setKeyboardSelectionStart(null);
 		}
 	};
 
@@ -370,7 +333,6 @@ const Calendar: React.FC = () => {
 			className="calendar-container"
 			ref={calendarGridRef}
 			onKeyDown={handleKeyDown}
-			onKeyUp={handleKeyUp}
 			onFocus={handleContainerFocus}
 			onBlur={handleContainerBlur}
 			tabIndex={0}

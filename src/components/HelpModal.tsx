@@ -22,13 +22,18 @@ const HelpModal: React.FC<HelpModalProps> = ({ onClose }) => {
 					Pocket<span>Cal</span> Instructions
 				</h2>
 				<div className="instructions-content">
+					<h3>Features</h3>
+					<ul>
+						<li>
+							Create up to {MAX_GROUPS} event groups with different colors
+						</li>
+						<li>Your data is saved locally in the URL</li>
+						<li>Share your calendar with others by sharing the URL</li>
+					</ul>
 					<h3>Navigation</h3>
 					<ul>
 						<li>
 							<strong>Click</strong> on any date to add/edit events
-						</li>
-						<li>
-							<strong>Tab</strong> to navigate between elements
 						</li>
 						<li>
 							<strong>Arrow keys</strong> to move between dates when calendar is
@@ -38,16 +43,6 @@ const HelpModal: React.FC<HelpModalProps> = ({ onClose }) => {
 							<strong>Enter</strong> or <strong>Space</strong> to toggle the
 							selected date
 						</li>
-					</ul>
-					<h3>Features</h3>
-					<ul>
-						<li>
-							Create up to {MAX_GROUPS} event groups with different colors
-						</li>
-						<li>Click the pencil icon to edit group names</li>
-						<li>Toggle weekends on/off in settings</li>
-						<li>Highlight today's date with the checkbox</li>
-						<li>Your data is saved locally in your browser</li>
 					</ul>
 				</div>
 			</div>

@@ -171,6 +171,12 @@ h2 span {
 	transition: background-color 0.3s ease;
 }
 
+.add-group-button:disabled {
+	background-color: #f0f0f0;
+	color: #ccc;
+	cursor: not-allowed;
+}
+
 input {
 	background-color: #fff;
 	border: 1px solid #ccc;
