@@ -44,6 +44,12 @@ const HelpModal: React.FC<HelpModalProps> = ({ onClose }) => {
 							selected date
 						</li>
 					</ul>
+					<h3>About</h3>
+					<p>
+						PocketCal is built by <a href="https://cassidoo.co/">cassidoo</a>{" "}
+						and is open source on{" "}
+						<a href="https://github.com/cassidoo/pocketcal">GitHub</a>.
+					</p>
 				</div>
 			</div>
 		</div>

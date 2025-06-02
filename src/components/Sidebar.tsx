@@ -245,14 +245,14 @@ function Sidebar() {
 					onClick={() => setShowHelpModal(true)}
 					aria-label="Show instructions"
 				>
-					<HelpIcon /> Help
+					<HelpIcon color="#000" /> Help
 				</button>
 				<button
 					className="footer-button"
 					onClick={handleCopyUrl}
 					aria-label="Copy URL to clipboard"
 				>
-					<CopyIcon /> Copy URL
+					<CopyIcon color="#000" /> Copy URL
 				</button>
 			</div>
 		</div>

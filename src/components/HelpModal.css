@@ -21,6 +21,19 @@
 	position: relative;
 }
 
+.modal-content a {
+	color: #8a35de;
+}
+
+.modal-content h2 {
+	margin-top: -10px;
+}
+
+.modal-content h2,
+.modal-content p {
+	margin-bottom: 0;
+}
+
 .modal-close {
 	position: absolute;
 	top: 12px;
