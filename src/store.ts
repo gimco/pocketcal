@@ -8,7 +8,10 @@ import {
 	parseISO,
 	eachDayOfInterval,
 	isSameDay,
+	differenceInDays,
+	addDays,
 } from "date-fns";
+import LZString from "lz-string";
 
 export const MAX_GROUPS = 5;
 
@@ -190,19 +193,95 @@ export const useStore = create<AppState>((set, get) => ({
 		try {
 			const hash = window.location.hash.substring(1);
 			if (hash) {
-				const decodedState = JSON.parse(atob(hash));
-				// Basic validation
-				if (decodedState.startDate && decodedState.eventGroups) {
-					const eventGroups = decodedState.eventGroups ?? [
-						createDefaultEventGroup(),
-					];
-					set({
-						startDate: startOfMonth(parseISO(decodedState.startDate)),
-						includeWeekends: decodedState.includeWeekends ?? true,
-						showToday: decodedState.showToday ?? true,
-						eventGroups,
-						selectedGroupId: eventGroups[0]?.id ?? null, // Select first group if available
-					});
+				let decodedState;
+				try {
+					const decompressed = LZString.decompressFromEncodedURIComponent(hash);
+					if (decompressed) {
+						decodedState = JSON.parse(decompressed);
+					} else {
+						decodedState = JSON.parse(atob(hash));
+					}
+				} catch {
+					decodedState = JSON.parse(atob(hash));
+				}
+
+				if (decodedState.startDate || decodedState.s) {
+					if (decodedState.s) {
+						const startDate = startOfMonth(parseISO(decodedState.s));
+						const usedColorIndices = new Set<number>();
+
+						const validGroups = (decodedState.g || []).filter((g: any) => {
+							return g.c !== undefined && g.c >= 0 && g.c < GROUP_COLORS.length;
+						});
+
+						validGroups.forEach((g: any) => {
+							usedColorIndices.add(g.c);
+						});
+
+						const eventGroups = (decodedState.g || []).map(
+							(g: any, index: number) => {
+								let colorIndex = g.c;
+
+								// If no color index, invalid, or already used
+								if (
+									colorIndex === undefined ||
+									colorIndex < 0 ||
+									colorIndex >= GROUP_COLORS.length
+								) {
+									for (let i = 0; i < GROUP_COLORS.length; i++) {
+										if (!usedColorIndices.has(i)) {
+											colorIndex = i;
+											usedColorIndices.add(i);
+											break;
+										}
+									}
+									// Fallback if all colors are used
+									if (colorIndex === undefined) {
+										colorIndex = index % GROUP_COLORS.length;
+									}
+								}
+
+								return {
+									id: nanoid(),
+									name: g.n || "My Events",
+									color: GROUP_COLORS[colorIndex].hex,
+									ranges: (g.r || []).map((r: any) => ({
+										start: formatISO(addDays(startDate, r[0]), {
+											representation: "date",
+										}),
+										end: formatISO(addDays(startDate, r[1]), {
+											representation: "date",
+										}),
+									})),
+								};
+							}
+						);
+
+						set({
+							startDate,
+							includeWeekends: decodedState.w ?? true,
+							showToday: decodedState.t ?? true,
+							eventGroups:
+								eventGroups.length > 0
+									? eventGroups
+									: [createDefaultEventGroup()],
+							selectedGroupId: eventGroups[0]?.id ?? null,
+						});
+					} else {
+						const eventGroups = decodedState.eventGroups ?? [
+							createDefaultEventGroup(),
+						];
+						set({
+							startDate: startOfMonth(parseISO(decodedState.startDate)),
+							includeWeekends: decodedState.includeWeekends ?? true,
+							showToday: decodedState.showToday ?? true,
+							eventGroups,
+							selectedGroupId: eventGroups[0]?.id ?? null,
+						});
+					}
+				} else {
+					// If no valid state in hash, use default
+					set(getDefaultState());
 				}
 			} else {
 				// If no hash, set to default state with the default group
@@ -215,15 +294,39 @@ export const useStore = create<AppState>((set, get) => ({
 	},
 
 	generateShareableUrl: () => {
-		const stateToShare = {
-			startDate: formatISO(get().startDate, { representation: "date" }),
-			includeWeekends: get().includeWeekends,
-			showToday: get().showToday,
-			eventGroups: get().eventGroups,
-			// Exclude selectedGroupId
+		const state = get();
+		const startDate = state.startDate;
+
+		const compressedState = {
+			s: formatISO(startDate, { representation: "date" }),
+			w: state.includeWeekends ? undefined : false,
+			t: state.showToday ? undefined : false,
+			g: state.eventGroups.map((group, index) => {
+				const compressedGroup: any = {
+					n: group.name === `My Events` ? undefined : group.name, // omit default name
+					c: GROUP_COLORS.findIndex((c) => c.hex === group.color),
+					r: group.ranges.map((range) => [
+						differenceInDays(parseISO(range.start), startDate),
+						differenceInDays(parseISO(range.end), startDate),
+					]),
+				};
+				Object.keys(compressedGroup).forEach(
+					(key) =>
+						compressedGroup[key] === undefined && delete compressedGroup[key]
+				);
+				return compressedGroup;
+			}),
 		};
-		const encodedState = btoa(JSON.stringify(stateToShare));
-		return `${window.location.origin}${window.location.pathname}#${encodedState}`;
+
+		// Remove default values
+		if (compressedState.w === undefined) delete compressedState.w;
+		if (compressedState.t === undefined) delete compressedState.t;
+		if (compressedState.g.length === 0) delete compressedState.g;
+
+		const compressed = LZString.compressToEncodedURIComponent(
+			JSON.stringify(compressedState)
+		);
+		return `${window.location.origin}${window.location.pathname}#${compressed}`;
 	},
 }));
 
