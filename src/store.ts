@@ -297,31 +297,32 @@ export const useStore = create<AppState>((set, get) => ({
 		const state = get();
 		const startDate = state.startDate;
 
-		const compressedState = {
-			s: formatISO(startDate, { representation: "date" }),
-			w: state.includeWeekends ? undefined : false,
-			t: state.showToday ? undefined : false,
-			g: state.eventGroups.map((group, index) => {
-				const compressedGroup: any = {
-					n: group.name === `My Events` ? undefined : group.name, // omit default name
-					c: GROUP_COLORS.findIndex((c) => c.hex === group.color),
-					r: group.ranges.map((range) => [
-						differenceInDays(parseISO(range.start), startDate),
-						differenceInDays(parseISO(range.end), startDate),
-					]),
-				};
-				Object.keys(compressedGroup).forEach(
-					(key) =>
-						compressedGroup[key] === undefined && delete compressedGroup[key]
-				);
-				return compressedGroup;
-			}),
-		};
+		const compressedState: { s: string; w?: boolean; t?: boolean; g?: any[] } =
+			{
+				s: formatISO(startDate, { representation: "date" }),
+				w: state.includeWeekends ? undefined : false,
+				t: state.showToday ? undefined : false,
+				g: state.eventGroups.map((group) => {
+					const compressedGroup: any = {
+						n: group.name === `My Events` ? undefined : group.name, // omit default name
+						c: GROUP_COLORS.findIndex((c) => c.hex === group.color),
+						r: group.ranges.map((range) => [
+							differenceInDays(parseISO(range.start), startDate),
+							differenceInDays(parseISO(range.end), startDate),
+						]),
+					};
+					Object.keys(compressedGroup).forEach(
+						(key) =>
+							compressedGroup[key] === undefined && delete compressedGroup[key]
+					);
+					return compressedGroup;
+				}),
+			};
 
 		// Remove default values
 		if (compressedState.w === undefined) delete compressedState.w;
 		if (compressedState.t === undefined) delete compressedState.t;
-		if (compressedState.g.length === 0) delete compressedState.g;
+		if (compressedState.g?.length === 0) delete compressedState.g;
 
 		const compressed = LZString.compressToEncodedURIComponent(
 			JSON.stringify(compressedState)
