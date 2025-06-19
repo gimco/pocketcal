@@ -1,7 +1,7 @@
 import React from "react";
 import XIcon from "./icons/XIcon";
 import { MAX_GROUPS } from "../store";
-import "./HelpModal.css";
+import "./Modal.css";
 
 interface HelpModalProps {
 	onClose: () => void;
@@ -25,7 +25,8 @@ const HelpModal: React.FC<HelpModalProps> = ({ onClose }) => {
 					<h3>Features</h3>
 					<ul>
 						<li>
-							Create up to {MAX_GROUPS} event groups with different colors
+							Create up to {MAX_GROUPS} event groups with different colors (or
+							up to 10 with Pro)
 						</li>
 						<li>Your data is saved locally in the URL</li>
 						<li>Share your calendar with others by sharing the URL</li>
@@ -45,7 +46,7 @@ const HelpModal: React.FC<HelpModalProps> = ({ onClose }) => {
 						</li>
 					</ul>
 					<h3>About</h3>
-					<p>
+					<p className="footer">
 						PocketCal is built by <a href="https://cassidoo.co/">cassidoo</a>{" "}
 						and is open source on{" "}
 						<a href="https://github.com/cassidoo/pocketcal">GitHub</a>.

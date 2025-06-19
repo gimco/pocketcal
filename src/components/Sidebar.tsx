@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useStore, EventGroup, MAX_GROUPS } from "../store";
+import { useStore, EventGroup, getMaxGroups } from "../store";
 import { format } from "date-fns";
 import CalIcon from "./icons/CalIcon";
 import PencilIcon from "./icons/PencilIcon";
@@ -10,6 +10,7 @@ import PlusIcon from "./icons/PlusIcon";
 import SettingsIcon from "./icons/SettingsIcon";
 import HelpIcon from "./icons/HelpIcon";
 import CopyIcon from "./icons/CopyIcon";
+import LicenseModal from "./LicenseModal";
 
 import "./Sidebar.css";
 
@@ -28,10 +29,12 @@ function Sidebar() {
 		updateEventGroup,
 		deleteEventGroup,
 		selectEventGroup,
+		isProUser,
 	} = useStore();
-
+	const maxGroups = getMaxGroups(isProUser);
 	const [newEventName, setNewEventName] = useState("");
 	const [editingGroup, setEditingGroup] = useState<EventGroup | null>(null);
+	const [showLicenseModal, setShowLicenseModal] = useState(false);
 
 	// Add effect to select the first group if none is selected
 	useEffect(() => {
@@ -41,7 +44,7 @@ function Sidebar() {
 	}, [selectedGroupId, eventGroups, selectEventGroup]);
 
 	const handleAddGroup = () => {
-		if (eventGroups.length < MAX_GROUPS) {
+		if (eventGroups.length < maxGroups) {
 			const newGroup = addEventGroup("New Group");
 			selectEventGroup(newGroup.id);
 		}
@@ -77,7 +80,6 @@ function Sidebar() {
 
 	const handleCopyUrl = () => {
 		navigator.clipboard.writeText(window.location.href);
-		// You could add a toast notification here if desired
 	};
 
 	const handleStartDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -100,7 +102,7 @@ function Sidebar() {
 
 			<h3>
 				<CalIcon height={20} />
-				Event Groups ({eventGroups.length}/{MAX_GROUPS})
+				Event Groups ({eventGroups.length}/{maxGroups})
 			</h3>
 			<div className="event-groups-list" role="list">
 				{eventGroups.map((group) => (
@@ -196,7 +198,7 @@ function Sidebar() {
 				))}
 			</div>
 
-			{eventGroups.length < MAX_GROUPS && (
+			{eventGroups.length < maxGroups && (
 				<button
 					className="add-group-button"
 					onClick={handleAddGroup}
@@ -239,22 +241,37 @@ function Sidebar() {
 				</div>
 			</>
 
-			<div className="sidebar-footer-buttons">
-				<button
-					className="footer-button"
-					onClick={() => setShowHelpModal(true)}
-					aria-label="Show instructions"
-				>
-					<HelpIcon color="#000" /> Help
-				</button>
-				<button
-					className="footer-button"
-					onClick={handleCopyUrl}
-					aria-label="Copy URL to clipboard"
-				>
-					<CopyIcon color="#000" /> Copy URL
-				</button>
+			<div className="sidebar-footer">
+				<div className="sidebar-footer-buttons">
+					<button
+						className="footer-button"
+						onClick={() => setShowLicenseModal(true)}
+						aria-label="Show license modal"
+					>
+						{isProUser ? "Pro Active" : "Go Pro"}
+					</button>
+				</div>
+
+				<div className="sidebar-footer-buttons">
+					<button
+						className="footer-button"
+						onClick={() => setShowHelpModal(true)}
+						aria-label="Show instructions"
+					>
+						<HelpIcon color="#000" /> Help
+					</button>
+					<button
+						className="footer-button"
+						onClick={handleCopyUrl}
+						aria-label="Copy URL to clipboard"
+					>
+						<CopyIcon color="#000" /> Copy URL
+					</button>
+				</div>
 			</div>
+			{showLicenseModal && (
+				<LicenseModal onClose={() => setShowLicenseModal(false)} />
+			)}
 		</div>
 	);
 }

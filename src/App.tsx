@@ -12,6 +12,8 @@ function App() {
 	const generateShareableUrl = useStore((state) => state.generateShareableUrl);
 	const showHelpModal = useStore((state) => state.showHelpModal);
 	const setShowHelpModal = useStore((state) => state.setShowHelpModal);
+	const validateLicenseKey = useStore((state) => state.validateLicenseKey);
+	const licenseKey = useStore((state) => state.licenseKey);
 
 	// Select individual state pieces needed for the URL
 	const startDate = useStore((state) => state.startDate);
@@ -22,7 +24,21 @@ function App() {
 	// Load state from URL on initial mount
 	useEffect(() => {
 		getAppStateFromUrl();
-	}, [getAppStateFromUrl]);
+
+		// Check license validity on load (with cache)
+		if (licenseKey) {
+			const lastValidated = localStorage.getItem("pocketcal_pro_validated");
+			const daysSinceValidation = lastValidated
+				? (Date.now() - parseInt(lastValidated)) / (1000 * 60 * 60 * 24)
+				: Infinity;
+			// Re-validate every 7 days
+			if (daysSinceValidation > 7) {
+				validateLicenseKey(licenseKey);
+			} else {
+				useStore.setState({ isProUser: true });
+			}
+		}
+	}, [getAppStateFromUrl, validateLicenseKey, licenseKey]);
 
 	// Update URL whenever relevant state pieces change
 	useEffect(() => {

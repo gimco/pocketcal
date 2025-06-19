@@ -228,11 +228,14 @@ input.group-name-input {
 	}
 }
 
+.sidebar-footer {
+	margin-top: auto;
+}
+
 .sidebar-footer-buttons {
 	display: flex;
 	gap: 8px;
-	margin-top: auto;
-	padding-top: 20px;
+	margin-bottom: 8px;
 }
 
 .footer-button {

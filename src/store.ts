@@ -21,7 +21,15 @@ export const GROUP_COLORS = [
 	{ hex: "#eb4888", rgb: "rgb(235, 72, 136)" }, // pink
 	{ hex: "#e9bc3f", rgb: "rgb(233, 188, 63)" }, // yellow
 	{ hex: "#24d05a", rgb: "rgb(36, 208, 90)" }, // green
+	// Pro colors (same as above, but with .6 alpha)
+	{ hex: "#8a35de99", rgb: "rgba(138, 53, 222, 0.6)" },
+	{ hex: "#10a2f599", rgb: "rgba(16, 162, 245, 0.6)" },
+	{ hex: "#eb488899", rgb: "rgba(235, 72, 136, 0.6)" },
+	{ hex: "#e9bc3f99", rgb: "rgba(233, 188, 63, 0.6)" },
+	{ hex: "#24d05a99", rgb: "rgba(36, 208, 90, 0.6)" },
 ];
+
+export const getMaxGroups = (isProUser: boolean) => (isProUser ? 10 : 5);
 
 export interface DateRange {
 	start: string;
@@ -41,11 +49,15 @@ interface AppState {
 	showToday: boolean;
 	eventGroups: EventGroup[];
 	selectedGroupId: string | null;
-	showHelpModal: boolean; // Add this
+	showHelpModal: boolean;
+	licenseKey: string | null;
+	isProUser: boolean;
 	setStartDate: (date: Date) => void;
 	setIncludeWeekends: (include: boolean) => void;
 	setShowToday: (show: boolean) => void;
-	setShowHelpModal: (show: boolean) => void; // Add this
+	setShowHelpModal: (show: boolean) => void;
+	setLicenseKey: (key: string | null) => void;
+	validateLicenseKey: (key: string) => Promise<boolean>;
 	addEventGroup: (name: string) => EventGroup;
 	updateEventGroup: (id: string, name: string) => void;
 	deleteEventGroup: (id: string) => void;
@@ -86,17 +98,58 @@ const getDefaultState = () => {
 export const useStore = create<AppState>((set, get) => ({
 	...getDefaultState(),
 	showHelpModal: false,
+	licenseKey: localStorage.getItem("pocketcal_license") || null,
+	isProUser: false,
 
 	setStartDate: (date) => set({ startDate: startOfMonth(date) }),
 	setIncludeWeekends: (include) => set({ includeWeekends: include }),
 	setShowToday: (show) => set({ showToday: show }),
 	setShowHelpModal: (show) => set({ showHelpModal: show }),
 
+	setLicenseKey: (key) => {
+		if (key) {
+			localStorage.setItem("pocketcal_license", key);
+		} else {
+			localStorage.removeItem("pocketcal_license");
+		}
+		set({ licenseKey: key });
+	},
+
+	validateLicenseKey: async (key) => {
+		try {
+			if (!key || key.length < 20) return false;
+			const instanceName = `pocketcal-web-${window.navigator.userAgent}-${window.location.hostname}`;
+			const response = await fetch("/.netlify/functions/validate-license", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({
+					licenseKey: key,
+					action: "activate",
+					instanceName,
+				}),
+			});
+			const data = await response.json();
+			const valid =
+				data.valid ||
+				(data.license_key && data.license_key.status === "active");
+			set({ isProUser: valid });
+			if (valid) {
+				localStorage.setItem("pocketcal_license", key);
+				localStorage.setItem("pocketcal_pro_validated", Date.now().toString());
+			}
+			return valid;
+		} catch (error) {
+			console.error("License validation error:", error);
+			return false;
+		}
+	},
+
 	addEventGroup: (name) => {
 		let newGroup: EventGroup | null = null;
 		set((state) => {
-			if (state.eventGroups.length >= MAX_GROUPS) {
-				return state; // Don't add if limit reached
+			const maxGroups = getMaxGroups(state.isProUser);
+			if (state.eventGroups.length >= maxGroups) {
+				return state;
 			}
 
 			// Find the first unused color
@@ -121,7 +174,7 @@ export const useStore = create<AppState>((set, get) => ({
 		});
 		return (
 			newGroup || {
-				id: "", // Return empty group if we hit the limit
+				id: "",
 				name: "",
 				color: "",
 				ranges: [],
@@ -188,7 +241,6 @@ export const useStore = create<AppState>((set, get) => ({
 			),
 		})),
 
-	// Function to parse state from URL hash
 	getAppStateFromUrl: () => {
 		try {
 			const hash = window.location.hash.substring(1);
@@ -304,7 +356,7 @@ export const useStore = create<AppState>((set, get) => ({
 				t: state.showToday ? undefined : false,
 				g: state.eventGroups.map((group) => {
 					const compressedGroup: any = {
-						n: group.name === `My Events` ? undefined : group.name, // omit default name
+						n: group.name === `My Events` ? undefined : group.name,
 						c: GROUP_COLORS.findIndex((c) => c.hex === group.color),
 						r: group.ranges.map((range) => [
 							differenceInDays(parseISO(range.start), startDate),
@@ -356,7 +408,6 @@ export const findRangeForDate = (
 
 export const getCalendarDates = (startDate: Date): Date[] => {
 	const endDate = addMonths(startDate, 11);
-	// Ensure we get the full end month
 	const endOfMonthDate = new Date(
 		endDate.getFullYear(),
 		endDate.getMonth() + 1,
