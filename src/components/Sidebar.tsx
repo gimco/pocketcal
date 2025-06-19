@@ -10,11 +10,14 @@ import PlusIcon from "./icons/PlusIcon";
 import SettingsIcon from "./icons/SettingsIcon";
 import HelpIcon from "./icons/HelpIcon";
 import CopyIcon from "./icons/CopyIcon";
-import LicenseModal from "./LicenseModal";
 
 import "./Sidebar.css";
 
-function Sidebar() {
+function Sidebar({
+	setShowLicenseModal,
+}: {
+	setShowLicenseModal: (show: boolean) => void;
+}) {
 	const {
 		startDate,
 		includeWeekends,
@@ -34,7 +37,6 @@ function Sidebar() {
 	const maxGroups = getMaxGroups(isProUser);
 	const [newEventName, setNewEventName] = useState("");
 	const [editingGroup, setEditingGroup] = useState<EventGroup | null>(null);
-	const [showLicenseModal, setShowLicenseModal] = useState(false);
 
 	// Add effect to select the first group if none is selected
 	useEffect(() => {
@@ -279,9 +281,6 @@ function Sidebar() {
 			</>
 
 			<div className="sidebar-footer">{footerGroups()}</div>
-			{showLicenseModal && (
-				<LicenseModal onClose={() => setShowLicenseModal(false)} />
-			)}
 		</div>
 	);
 }

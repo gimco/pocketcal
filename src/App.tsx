@@ -5,9 +5,11 @@ import Sidebar from "./components/Sidebar";
 import Calendar from "./components/Calendar";
 import ChevronIcon from "./components/icons/ChevronIcon";
 import HelpModal from "./components/HelpModal";
+import LicenseModal from "./components/LicenseModal";
 
 function App() {
 	const [isSidebarHidden, setIsSidebarHidden] = useState(false);
+	const [showLicenseModal, setShowLicenseModal] = useState(false);
 	const getAppStateFromUrl = useStore((state) => state.getAppStateFromUrl);
 	const generateShareableUrl = useStore((state) => state.generateShareableUrl);
 	const showHelpModal = useStore((state) => state.showHelpModal);
@@ -77,9 +79,12 @@ function App() {
 			>
 				<ChevronIcon color="black" />
 			</button>
-			<Sidebar />
+			<Sidebar setShowLicenseModal={setShowLicenseModal} />
 			<Calendar />
 			{showHelpModal && <HelpModal onClose={() => setShowHelpModal(false)} />}
+			{showLicenseModal && (
+				<LicenseModal onClose={() => setShowLicenseModal(false)} />
+			)}
 		</div>
 	);
 }
