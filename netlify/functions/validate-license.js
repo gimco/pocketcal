@@ -1,14 +1,56 @@
-import fetch from "node-fetch";
+function getAllowedOrigin(origin) {
+	if (!origin) return null;
+	if (origin.endsWith("pocketcal.com")) return origin;
+	if (
+		origin.startsWith("http://localhost") ||
+		origin.startsWith("https://localhost")
+	)
+		return origin;
+	return null;
+}
 
 exports.handler = async function (event) {
+	const origin = event.headers.origin || event.headers.Origin;
+	const allowedOrigin = getAllowedOrigin(origin);
+
 	if (event.httpMethod !== "POST") {
-		return { statusCode: 405, body: "Method Not Allowed" };
+		return {
+			statusCode: 405,
+			headers: allowedOrigin
+				? {
+						"Access-Control-Allow-Origin": allowedOrigin,
+						"Access-Control-Allow-Headers": "Content-Type, Authorization",
+				  }
+				: {},
+			body: "Method Not Allowed",
+		};
+	}
+
+	// Handle preflight OPTIONS request
+	if (event.httpMethod === "OPTIONS") {
+		return {
+			statusCode: 200,
+			headers: allowedOrigin
+				? {
+						"Access-Control-Allow-Origin": allowedOrigin,
+						"Access-Control-Allow-Headers": "Content-Type, Authorization",
+						"Access-Control-Allow-Methods": "POST, OPTIONS",
+				  }
+				: {},
+			body: "",
+		};
 	}
 
 	try {
 		const { licenseKey } = JSON.parse(event.body);
 		if (!licenseKey) {
-			return { statusCode: 200, body: JSON.stringify({ valid: false }) };
+			return {
+				statusCode: 200,
+				headers: allowedOrigin
+					? { "Access-Control-Allow-Origin": allowedOrigin }
+					: {},
+				body: JSON.stringify({ valid: false }),
+			};
 		}
 
 		const response = await fetch(
@@ -30,11 +72,17 @@ exports.handler = async function (event) {
 		const data = await response.json();
 		return {
 			statusCode: 200,
+			headers: allowedOrigin
+				? { "Access-Control-Allow-Origin": allowedOrigin }
+				: {},
 			body: JSON.stringify({ valid: data.valid && data.status === "active" }),
 		};
 	} catch (error) {
 		return {
 			statusCode: 200,
+			headers: allowedOrigin
+				? { "Access-Control-Allow-Origin": allowedOrigin }
+				: {},
 			body: JSON.stringify({ valid: false }),
 		};
 	}
