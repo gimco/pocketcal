@@ -94,10 +94,47 @@ function Sidebar() {
 		}
 	};
 
+	const footerGroups = () => {
+		let proButton = (
+			<div className="sidebar-footer-buttons">
+				<button
+					className="footer-button"
+					onClick={() => setShowLicenseModal(true)}
+					aria-label="Show license modal"
+				>
+					{isProUser ? "Thanks for going Pro!" : "Go Pro"}
+				</button>
+			</div>
+		);
+		let helpAndCopyButtons = (
+			<div className="sidebar-footer-buttons">
+				<button
+					className="footer-button"
+					onClick={() => setShowHelpModal(true)}
+					aria-label="Show instructions"
+				>
+					<HelpIcon color="#000" /> Help
+				</button>
+				<button
+					className="footer-button"
+					onClick={handleCopyUrl}
+					aria-label="Copy URL to clipboard"
+				>
+					<CopyIcon color="#000" /> Copy URL
+				</button>
+			</div>
+		);
+
+		return isProUser
+			? [helpAndCopyButtons, proButton]
+			: [proButton, helpAndCopyButtons];
+	};
+
 	return (
 		<div className="sidebar">
 			<h1 className="logo">
-				Pocket<span>Cal</span>
+				Pocket<span className="logo-cal">Cal</span>{" "}
+				{isProUser && <span className="pro-badge">Pro</span>}
 			</h1>
 
 			<h3>
@@ -241,34 +278,7 @@ function Sidebar() {
 				</div>
 			</>
 
-			<div className="sidebar-footer">
-				<div className="sidebar-footer-buttons">
-					<button
-						className="footer-button"
-						onClick={() => setShowLicenseModal(true)}
-						aria-label="Show license modal"
-					>
-						{isProUser ? "Pro Active" : "Go Pro"}
-					</button>
-				</div>
-
-				<div className="sidebar-footer-buttons">
-					<button
-						className="footer-button"
-						onClick={() => setShowHelpModal(true)}
-						aria-label="Show instructions"
-					>
-						<HelpIcon color="#000" /> Help
-					</button>
-					<button
-						className="footer-button"
-						onClick={handleCopyUrl}
-						aria-label="Copy URL to clipboard"
-					>
-						<CopyIcon color="#000" /> Copy URL
-					</button>
-				</div>
-			</div>
+			<div className="sidebar-footer">{footerGroups()}</div>
 			{showLicenseModal && (
 				<LicenseModal onClose={() => setShowLicenseModal(false)} />
 			)}

@@ -73,7 +73,8 @@ const LicenseModal: React.FC<LicenseModalProps> = ({ onClose }) => {
 					<XIcon color="#000" />
 				</button>
 				<h2>
-					Pocket<span>Cal</span> Pro
+					Pocket<span className="logo-cal">Cal</span>{" "}
+					<span className="pro-badge">Pro</span>
 				</h2>
 
 				<p>{proDescription()}</p>
@@ -105,7 +106,7 @@ const LicenseModal: React.FC<LicenseModalProps> = ({ onClose }) => {
 						/>
 						<div className="license-actions">
 							<a
-								href="https://cassidoo.lemonsqueezy.com/buy/8a4950f8-5f10-4a34-835c-7e45146d942a?embed=1&logo=0"
+								href="https://cassidoo.lemonsqueezy.com/buy/741d9abc-39c1-4ec1-9f21-e585bf8e6a13?embed=1&logo=0"
 								className="buy-license-link lemonsqueezy-button"
 							>
 								Don't have a license? Get one here!
