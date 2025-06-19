@@ -4,6 +4,12 @@ import CalIcon from "./icons/CalIcon";
 import { useStore, getMaxGroups } from "../store";
 import "./Modal.css";
 
+declare global {
+	interface Window {
+		createLemonSqueezy: () => void;
+	}
+}
+
 interface LicenseModalProps {
 	onClose: () => void;
 }
