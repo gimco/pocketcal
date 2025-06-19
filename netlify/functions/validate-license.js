@@ -42,7 +42,7 @@ exports.handler = async function (event) {
 	}
 
 	try {
-		const { licenseKey } = JSON.parse(event.body);
+		const { licenseKey, action, instanceName } = JSON.parse(event.body);
 		if (!licenseKey) {
 			return {
 				statusCode: 200,
@@ -53,21 +53,31 @@ exports.handler = async function (event) {
 			};
 		}
 
-		const response = await fetch(
-			"https://api.lemonsqueezy.com/v1/licenses/validate",
-			{
-				method: "POST",
-				headers: {
-					Accept: "application/json",
-					"Content-Type": "application/json",
-					Authorization: `Bearer ${process.env.LEMON_SQUEEZY_API_KEY}`,
-				},
-				body: JSON.stringify({
-					license_key: licenseKey,
-					product_id: process.env.LEMON_SQUEEZY_PRODUCT_ID,
-				}),
-			}
-		);
+		let apiUrl, apiBody;
+		if (action === "activate") {
+			apiUrl = "https://api.lemonsqueezy.com/v1/licenses/activate";
+			apiBody = {
+				license_key: licenseKey,
+				instance_name: instanceName || "pocketcal-web",
+				product_id: process.env.LEMON_SQUEEZY_PRODUCT_ID,
+			};
+		} else {
+			apiUrl = "https://api.lemonsqueezy.com/v1/licenses/validate";
+			apiBody = {
+				license_key: licenseKey,
+				product_id: process.env.LEMON_SQUEEZY_PRODUCT_ID,
+			};
+		}
+
+		const response = await fetch(apiUrl, {
+			method: "POST",
+			headers: {
+				Accept: "application/json",
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${process.env.LEMON_SQUEEZY_API_KEY}`,
+			},
+			body: JSON.stringify(apiBody),
+		});
 
 		const data = await response.json();
 		return {
@@ -75,7 +85,7 @@ exports.handler = async function (event) {
 			headers: allowedOrigin
 				? { "Access-Control-Allow-Origin": allowedOrigin }
 				: {},
-			body: JSON.stringify({ valid: data.valid && data.status === "active" }),
+			body: JSON.stringify(data),
 		};
 	} catch (error) {
 		return {
@@ -83,7 +93,7 @@ exports.handler = async function (event) {
 			headers: allowedOrigin
 				? { "Access-Control-Allow-Origin": allowedOrigin }
 				: {},
-			body: JSON.stringify({ valid: false }),
+			body: JSON.stringify({ valid: false, error: error.message }),
 		};
 	}
 };
