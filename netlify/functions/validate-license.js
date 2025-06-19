@@ -26,21 +26,6 @@ exports.handler = async function (event) {
 		};
 	}
 
-	// Handle preflight OPTIONS request
-	if (event.httpMethod === "OPTIONS") {
-		return {
-			statusCode: 200,
-			headers: allowedOrigin
-				? {
-						"Access-Control-Allow-Origin": allowedOrigin,
-						"Access-Control-Allow-Headers": "Content-Type, Authorization",
-						"Access-Control-Allow-Methods": "POST, OPTIONS",
-				  }
-				: {},
-			body: "",
-		};
-	}
-
 	try {
 		const { licenseKey, action, instanceName } = JSON.parse(event.body);
 		if (!licenseKey) {
