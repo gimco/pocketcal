@@ -28,6 +28,8 @@ export const translations = {
 		eventGroup: "Event:",
 		edit: "Edit",
 		delete: "Delete",
+		editMode: "Edit Mode",
+		exitEditMode: "Exit Edit Mode",
 	},
 	es: {
 		eventGroups: "Eventos",
@@ -49,6 +51,8 @@ export const translations = {
 		eventGroup: "Evento:",
 		edit: "Editar",
 		delete: "Eliminar",
+		editMode: "Modo Edición",
+		exitEditMode: "Salir del Modo Edición",
 	},
 	ca: {
 		eventGroups: "Esdeveniments",
@@ -70,6 +74,8 @@ export const translations = {
 		eventGroup: "Esdeveniment:",
 		edit: "Editar",
 		delete: "Eliminar",
+		editMode: "Mode Edició",
+		exitEditMode: "Sortir del Mode Edició",
 	},
 	fr: {
 		eventGroups: "Événements",
@@ -91,6 +97,8 @@ export const translations = {
 		eventGroup: "Événement:",
 		edit: "Modifier",
 		delete: "Supprimer",
+		editMode: "Mode Édition",
+		exitEditMode: "Quitter le Mode Édition",
 	},
 	de: {
 		eventGroups: "Ereignisse",
@@ -112,6 +120,8 @@ export const translations = {
 		eventGroup: "Ereignis:",
 		edit: "Bearbeiten",
 		delete: "Löschen",
+		editMode: "Bearbeitungsmodus",
+		exitEditMode: "Bearbeitungsmodus verlassen",
 	},
 	it: {
 		eventGroups: "Eventi",
@@ -133,6 +143,8 @@ export const translations = {
 		eventGroup: "Evento:",
 		edit: "Modifica",
 		delete: "Elimina",
+		editMode: "Modalità Modifica",
+		exitEditMode: "Esci dalla Modalità Modifica",
 	},
 	pt: {
 		eventGroups: "Eventos",
@@ -154,6 +166,8 @@ export const translations = {
 		eventGroup: "Evento:",
 		edit: "Editar",
 		delete: "Excluir",
+		editMode: "Modo Edição",
+		exitEditMode: "Sair do Modo Edição",
 	},
 	ru: {
 		eventGroups: "События",
@@ -175,6 +189,8 @@ export const translations = {
 		eventGroup: "Событие:",
 		edit: "Редактировать",
 		delete: "Удалить",
+		editMode: "Режим Редактирования",
+		exitEditMode: "Выйти из Режима Редактирования",
 	},
 	ja: {
 		eventGroups: "イベント",
@@ -196,6 +212,8 @@ export const translations = {
 		eventGroup: "イベント:",
 		edit: "編集",
 		delete: "削除",
+		editMode: "編集モード",
+		exitEditMode: "編集モードを終了",
 	},
 	ko: {
 		eventGroups: "이벤트",
@@ -217,6 +235,8 @@ export const translations = {
 		eventGroup: "이벤트:",
 		edit: "편집",
 		delete: "삭제",
+		editMode: "편집 모드",
+		exitEditMode: "편집 모드 종료",
 	},
 	zh: {
 		eventGroups: "事件",
@@ -238,6 +258,8 @@ export const translations = {
 		eventGroup: "事件:",
 		edit: "编辑",
 		delete: "删除",
+		editMode: "编辑模式",
+		exitEditMode: "退出编辑模式",
 	},
 };
 

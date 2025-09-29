@@ -11,6 +11,7 @@ import PlusIcon from "./icons/PlusIcon";
 import SettingsIcon from "./icons/SettingsIcon";
 import HelpIcon from "./icons/HelpIcon";
 import CopyIcon from "./icons/CopyIcon";
+import EditIcon from "./icons/EditIcon";
 
 import "./Sidebar.css";
 
@@ -38,6 +39,7 @@ function Sidebar({
 	const maxGroups = getMaxGroups(isProUser);
 	const [newEventName, setNewEventName] = useState("");
 	const [editingGroup, setEditingGroup] = useState<EventGroup | null>(null);
+	const [isEditMode, setIsEditMode] = useState(false);
 
 	// Add effect to select the first group if none is selected
 	useEffect(() => {
@@ -98,6 +100,23 @@ function Sidebar({
 	};
 
 	const footerGroups = () => {
+		let editModeButton = (
+			<div className="sidebar-footer-buttons">
+				<button
+					className="footer-button"
+					onClick={() => setIsEditMode(!isEditMode)}
+					aria-label={isEditMode ? t("exitEditMode") : t("editMode")}
+				>
+					<EditIcon color="#000" /> {isEditMode ? t("exitEditMode") : t("editMode")}
+				</button>
+			</div>
+		);
+
+		// Solo mostrar otros botones en modo de edición
+		if (!isEditMode) {
+			return [editModeButton];
+		}
+
 		let proButton = (
 			<div className="sidebar-footer-buttons">
 				<button
@@ -129,8 +148,8 @@ function Sidebar({
 		);
 
 		return isProUser
-			? [helpAndCopyButtons, proButton]
-			: [proButton, helpAndCopyButtons];
+			? [editModeButton, helpAndCopyButtons, proButton]
+			: [editModeButton, proButton, helpAndCopyButtons];
 	};
 
 	return (
@@ -208,37 +227,39 @@ function Sidebar({
 						) : (
 							<>
 								<span className="group-name">{group.name}</span>
-								<div className="group-actions">
-									<button
-										onClick={(e) => {
-											e.stopPropagation();
-											handleEditClick(group);
-										}}
-										disabled={!!editingGroup}
-										className="edit-button"
-										aria-label={`${t("edit")} ${group.name}`}
-									>
-										<PencilIcon color="#000" />
-									</button>
-									<button
-										onClick={(e) => {
-											e.stopPropagation();
-											deleteEventGroup(group.id);
-										}}
-										disabled={!!editingGroup}
-										className="delete-button"
-										aria-label={`${t("delete")} ${group.name}`}
-									>
-										<TrashIcon color="#000" />
-									</button>
-								</div>
+								{isEditMode && (
+									<div className="group-actions">
+										<button
+											onClick={(e) => {
+												e.stopPropagation();
+												handleEditClick(group);
+											}}
+											disabled={!!editingGroup}
+											className="edit-button"
+											aria-label={`${t("edit")} ${group.name}`}
+										>
+											<PencilIcon color="#000" />
+										</button>
+										<button
+											onClick={(e) => {
+												e.stopPropagation();
+												deleteEventGroup(group.id);
+											}}
+											disabled={!!editingGroup}
+											className="delete-button"
+											aria-label={`${t("delete")} ${group.name}`}
+										>
+											<TrashIcon color="#000" />
+										</button>
+									</div>
+								)}
 							</>
 						)}
 					</div>
 				))}
 			</div>
 
-			{eventGroups.length < maxGroups && (
+			{isEditMode && eventGroups.length < maxGroups && (
 				<button
 					className="add-group-button"
 					onClick={handleAddGroup}
@@ -248,38 +269,40 @@ function Sidebar({
 				</button>
 			)}
 
-			<>
-				<h3>
-					<SettingsIcon height={20} /> {t("settings")}
-				</h3>
-				<div className="setting-item">
-					<label htmlFor="start-date">{t("startMonth")}</label>
-					<input
-						type="month"
-						id="start-date"
-						value={format(startDate, "yyyy-MM")}
-						onChange={handleStartDateChange}
-					/>
-				</div>
-				<div className="setting-item">
-					<label htmlFor="include-weekends">{t("includeWeekends")}</label>
-					<input
-						type="checkbox"
-						id="include-weekends"
-						checked={includeWeekends}
-						onChange={(e) => setIncludeWeekends(e.target.checked)}
-					/>
-				</div>
-				<div className="setting-item">
-					<label htmlFor="show-today">{t("highlightToday")}</label>
-					<input
-						type="checkbox"
-						id="show-today"
-						checked={showToday}
-						onChange={(e) => setShowToday(e.target.checked)}
-					/>
-				</div>
-			</>
+			{isEditMode && (
+				<>
+					<h3>
+						<SettingsIcon height={20} /> {t("settings")}
+					</h3>
+					<div className="setting-item">
+						<label htmlFor="start-date">{t("startMonth")}</label>
+						<input
+							type="month"
+							id="start-date"
+							value={format(startDate, "yyyy-MM")}
+							onChange={handleStartDateChange}
+						/>
+					</div>
+					<div className="setting-item">
+						<label htmlFor="include-weekends">{t("includeWeekends")}</label>
+						<input
+							type="checkbox"
+							id="include-weekends"
+							checked={includeWeekends}
+							onChange={(e) => setIncludeWeekends(e.target.checked)}
+						/>
+					</div>
+					<div className="setting-item">
+						<label htmlFor="show-today">{t("highlightToday")}</label>
+						<input
+							type="checkbox"
+							id="show-today"
+							checked={showToday}
+							onChange={(e) => setShowToday(e.target.checked)}
+						/>
+					</div>
+				</>
+			)}
 
 			<div className="sidebar-footer">{footerGroups()}</div>
 		</div>
