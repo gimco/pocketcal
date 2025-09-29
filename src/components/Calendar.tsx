@@ -22,7 +22,60 @@ import {
 	subDays,
 	addDays,
 } from "date-fns";
+import { enUS, es, fr, de, it, pt, ru, ja, ko, zhCN, ca } from "date-fns/locale";
 import "./Calendar.css";
+
+// Función para detectar el idioma del navegador y obtener la configuración de localización
+const getLocaleConfig = () => {
+	const browserLang = navigator.language || navigator.languages?.[0] || 'en';
+	const langCode = browserLang.split('-')[0];
+	
+	// Mapeo de códigos de idioma a locales de date-fns
+	const localeMap: { [key: string]: any } = {
+		en: enUS,
+		es: es,
+		ca: ca,
+		fr: fr,
+		de: de,
+		it: it,
+		pt: pt,
+		ru: ru,
+		ja: ja,
+		ko: ko,
+		zh: zhCN,
+	};
+	
+	const locale = localeMap[langCode] || enUS;
+	
+	// Determinar el primer día de la semana según el idioma
+	// 0 = Domingo, 1 = Lunes
+	const firstDayOfWeek = locale.code === 'es' || 
+		locale.code === 'ca' ||
+		locale.code === 'fr' || 
+		locale.code === 'de' || 
+		locale.code === 'it' || 
+		locale.code === 'pt' || 
+		locale.code === 'ru' ? 1 : 0;
+	
+	return { locale, firstDayOfWeek };
+};
+
+// Función para obtener los nombres cortos de los días de la semana
+const getWeekdayNames = (locale: any, firstDayOfWeek: number) => {
+	const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+	const localizedWeekdays = weekdays.map(day => 
+		format(new Date(2024, 0, 7 + weekdays.indexOf(day)), 'EEE', { locale })
+	);
+	
+	// Reordenar según el primer día de la semana
+	const reorderedWeekdays = [];
+	for (let i = 0; i < 7; i++) {
+		const index = (firstDayOfWeek + i) % 7;
+		reorderedWeekdays.push(localizedWeekdays[index]);
+	}
+	
+	return reorderedWeekdays;
+};
 
 const Calendar: React.FC = () => {
 	const {
@@ -34,6 +87,10 @@ const Calendar: React.FC = () => {
 		addDateRange,
 		deleteDateRange,
 	} = useStore();
+
+	// Obtener configuración de localización
+	const { locale, firstDayOfWeek } = getLocaleConfig();
+	const weekdayNames = getWeekdayNames(locale, firstDayOfWeek);
 
 	const calendarDates = getCalendarDates(startDate);
 	const today = startOfDay(new Date());
@@ -94,14 +151,18 @@ const Calendar: React.FC = () => {
 				break;
 			case "ArrowDown":
 				// Move down by a week (or 5 days if weekends are hidden)
+				// Ajustar según el primer día de la semana localizado
+				const daysPerWeek = includeWeekends ? 7 : 5;
 				newIndex = Math.min(
-					currentIndex + (includeWeekends ? 7 : 5),
+					currentIndex + daysPerWeek,
 					filteredDates.length - 1
 				);
 				break;
 			case "ArrowUp":
 				// Move up by a week (or 5 days if weekends are hidden)
-				newIndex = Math.max(currentIndex - (includeWeekends ? 7 : 5), 0);
+				// Ajustar según el primer día de la semana localizado
+				const daysPerWeekUp = includeWeekends ? 7 : 5;
+				newIndex = Math.max(currentIndex - daysPerWeekUp, 0);
 				break;
 			case " ":
 			case "Enter":
@@ -257,11 +318,22 @@ const Calendar: React.FC = () => {
 	const getMonthYearKey = (date: Date) => `${getYear(date)}-${getMonth(date)}`;
 
 	const adjustPaddingForWeekdays = (dayOfWeek: number): number => {
+		// Ajustar el día de la semana según el primer día de la semana localizado
+		const adjustedDayOfWeek = (dayOfWeek - firstDayOfWeek + 7) % 7;
+		
 		if (!includeWeekends) {
-			if (dayOfWeek === 0) return 0;
-			return dayOfWeek - 1;
+			// Si no se incluyen fines de semana, ajustar el padding
+			if (firstDayOfWeek === 1) {
+				// Lunes es el primer día (0-6: Lun, Mar, Mié, Jue, Vie, Sáb, Dom)
+				if (adjustedDayOfWeek === 0) return 0; // Lunes
+				return adjustedDayOfWeek;
+			} else {
+				// Domingo es el primer día (0-6: Dom, Lun, Mar, Mié, Jue, Vie, Sáb)
+				if (adjustedDayOfWeek === 0) return 0; // Domingo
+				return adjustedDayOfWeek;
+			}
 		}
-		return dayOfWeek;
+		return adjustedDayOfWeek;
 	};
 
 	const groupedDates = calendarDates.reduce((acc, date) => {
@@ -351,7 +423,7 @@ const Calendar: React.FC = () => {
 				return (
 					<div key={monthYearKey} className="calendar-month">
 						<h3 id={`month-${monthYearKey}`}>
-							{format(monthDate, "MMMM yyyy")}
+							{format(monthDate, "MMMM yyyy", { locale })}
 						</h3>
 						<div
 							className={`calendar-grid ${
@@ -360,9 +432,9 @@ const Calendar: React.FC = () => {
 							role="grid"
 							aria-labelledby={`month-${monthYearKey}`}
 						>
-							{["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+							{weekdayNames
 								.filter(
-									(_, index) => includeWeekends || (index > 0 && index < 6)
+									(_, index) => includeWeekends || (firstDayOfWeek === 1 ? index < 5 : (index > 0 && index < 6))
 								)
 								.map((day) => (
 									<div key={day} className="weekday-header" role="columnheader">
@@ -393,7 +465,7 @@ const Calendar: React.FC = () => {
 										data-date={dateStr}
 										role="gridcell"
 										aria-selected={isSelected}
-										aria-label={format(date, "MMMM d, yyyy")}
+										aria-label={format(date, "MMMM d, yyyy", { locale })}
 										tabIndex={
 											focusedDate && checkSameDay(date, focusedDate) ? 0 : -1
 										}
