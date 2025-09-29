@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useStore, EventGroup, getMaxGroups } from "../store";
 import { format } from "date-fns";
+import { t } from "../utils/i18n";
 import CalIcon from "./icons/CalIcon";
 import PencilIcon from "./icons/PencilIcon";
 import TrashIcon from "./icons/TrashIcon";
@@ -47,7 +48,7 @@ function Sidebar({
 
 	const handleAddGroup = () => {
 		if (eventGroups.length < maxGroups) {
-			const newGroup = addEventGroup("New Group");
+			const newGroup = addEventGroup(t("addNewGroup"));
 			selectEventGroup(newGroup.id);
 		}
 	};
@@ -102,9 +103,9 @@ function Sidebar({
 				<button
 					className="footer-button"
 					onClick={() => setShowLicenseModal(true)}
-					aria-label="Show license modal"
+					aria-label={t("showLicenseModal")}
 				>
-					{isProUser ? "Thanks for going Pro!" : "Go Pro"}
+					{isProUser ? t("thanksForPro") : t("goPro")}
 				</button>
 			</div>
 		);
@@ -113,16 +114,16 @@ function Sidebar({
 				<button
 					className="footer-button"
 					onClick={() => setShowHelpModal(true)}
-					aria-label="Show instructions"
+					aria-label={t("showInstructions")}
 				>
-					<HelpIcon color="#000" /> Help
+					<HelpIcon color="#000" /> {t("help")}
 				</button>
 				<button
 					className="footer-button"
 					onClick={handleCopyUrl}
-					aria-label="Copy URL to clipboard"
+					aria-label={t("copyUrlToClipboard")}
 				>
-					<CopyIcon color="#000" /> Copy URL
+					<CopyIcon color="#000" /> {t("copyUrl")}
 				</button>
 			</div>
 		);
@@ -141,7 +142,7 @@ function Sidebar({
 
 			<h3>
 				<CalIcon height={20} />
-				Event Groups ({eventGroups.length}/{maxGroups})
+				{t("eventGroups")} ({eventGroups.length}/{maxGroups})
 			</h3>
 			<div className="event-groups-list" role="list">
 				{eventGroups.map((group) => (
@@ -157,7 +158,7 @@ function Sidebar({
 						tabIndex={editingGroup?.id !== group.id ? 0 : -1}
 						role="listitem"
 						aria-selected={selectedGroupId === group.id}
-						aria-label={`Event group: ${group.name}`}
+						aria-label={`${t("eventGroup")} ${group.name}`}
 					>
 						<span
 							className="color-indicator"
@@ -179,7 +180,7 @@ function Sidebar({
 									}}
 									autoFocus
 									className="group-name-input"
-									aria-label="Edit group name"
+									aria-label={t("editGroupName")}
 								/>
 								<div className="group-actions">
 									<button
@@ -188,7 +189,7 @@ function Sidebar({
 											handleUpdateGroup();
 										}}
 										className="save-button"
-										aria-label="Save group name"
+										aria-label={t("saveGroupName")}
 									>
 										<SaveIcon color="#000" />
 									</button>
@@ -198,7 +199,7 @@ function Sidebar({
 											handleCancelEdit();
 										}}
 										className="cancel-button"
-										aria-label="Cancel editing"
+										aria-label={t("cancelEditing")}
 									>
 										<XIcon color="#000" />
 									</button>
@@ -215,7 +216,7 @@ function Sidebar({
 										}}
 										disabled={!!editingGroup}
 										className="edit-button"
-										aria-label={`Edit ${group.name}`}
+										aria-label={`${t("edit")} ${group.name}`}
 									>
 										<PencilIcon color="#000" />
 									</button>
@@ -226,7 +227,7 @@ function Sidebar({
 										}}
 										disabled={!!editingGroup}
 										className="delete-button"
-										aria-label={`Delete ${group.name}`}
+										aria-label={`${t("delete")} ${group.name}`}
 									>
 										<TrashIcon color="#000" />
 									</button>
@@ -243,16 +244,16 @@ function Sidebar({
 					onClick={handleAddGroup}
 					disabled={!!editingGroup}
 				>
-					<PlusIcon height={18} /> Add new group
+					<PlusIcon height={18} /> {t("addNewGroup")}
 				</button>
 			)}
 
 			<>
 				<h3>
-					<SettingsIcon height={20} /> Settings
+					<SettingsIcon height={20} /> {t("settings")}
 				</h3>
 				<div className="setting-item">
-					<label htmlFor="start-date">Start Month:</label>
+					<label htmlFor="start-date">{t("startMonth")}</label>
 					<input
 						type="month"
 						id="start-date"
@@ -261,7 +262,7 @@ function Sidebar({
 					/>
 				</div>
 				<div className="setting-item">
-					<label htmlFor="include-weekends">Include Weekends:</label>
+					<label htmlFor="include-weekends">{t("includeWeekends")}</label>
 					<input
 						type="checkbox"
 						id="include-weekends"
@@ -270,7 +271,7 @@ function Sidebar({
 					/>
 				</div>
 				<div className="setting-item">
-					<label htmlFor="show-today">Highlight Today:</label>
+					<label htmlFor="show-today">{t("highlightToday")}</label>
 					<input
 						type="checkbox"
 						id="show-today"
